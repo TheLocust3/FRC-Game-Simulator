@@ -1,0 +1,17 @@
+{
+  "RED": [
+    "lowbar",
+    "portcullis",
+    "moat",
+    "drawbridge",
+    "rock_wall"
+  ],
+
+  "BLUE": [
+    "lowbar",
+    "portcullis",
+    "moat",
+    "drawbridge",
+    "rock_wall"
+  ]
+}

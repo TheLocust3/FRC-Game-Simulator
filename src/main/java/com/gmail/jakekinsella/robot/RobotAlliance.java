@@ -1,0 +1,105 @@
+package com.gmail.jakekinsella.robot;
+
+import com.gmail.jakekinsella.Paintable;
+import com.gmail.jakekinsella.field.defense.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+/**
+ * Created by jakekinsella on 9/12/16.
+ */
+public class RobotAlliance implements Paintable {
+
+    private RobotAllianceColor color;
+    private ArrayList<Robot> robots;
+    private ArrayList<Defense> defenses = new ArrayList<>();
+
+    private static final Logger logger = LogManager.getLogger();
+
+    public RobotAlliance(RobotAllianceColor color) {
+        this.color = color;
+        this.robots = new ArrayList<>();
+
+        this.defenses.add(new LowbarDefense(1, color));
+        this.defenses.add(new LowbarDefense(2, color));
+        this.defenses.add(new LowbarDefense(3, color));
+        this.defenses.add(new LowbarDefense(4, color));
+        this.defenses.add(new LowbarDefense(5, color));
+    }
+
+    public RobotAllianceColor getColor() {
+        return this.color;
+    }
+
+    public void addRobot(Robot robot) {
+        this.robots.add(robot);
+    }
+
+    public JSONArray toJSONArray() {
+        JSONArray array = new JSONArray();
+        for (Robot robot : this.robots) {
+            array.add(robot.toJSONObject());
+        }
+
+        return array;
+    }
+
+    public void setAllDefenses(ArrayList<Defense> defenses) {
+        this.defenses = defenses;
+    }
+
+    public void start() {
+        for (Robot robot : this.robots) {
+            while (!robot.startGame()) {
+                logger.error(robot.getRobotName() + " failed to start game! Re-trying");
+            }
+        }
+    }
+
+    public void stopGame() {
+        for (Robot robot : this.robots) {
+            robot.stopGame();
+        }
+    }
+
+    public void startAuto() {
+        for (Robot robot : this.robots) {
+            while (!robot.startAuto()) {
+                logger.error(robot.getRobotName() + " failed to start auto! Re-trying");
+            }
+        }
+    }
+
+    public void startTeleop() {
+        for (Robot robot : this.robots) {
+            robot.startTeleop();
+        }
+    }
+
+    public void sendMapUpdate(String map) {
+        for (Robot robot : this.robots) {
+            robot.sendMapUpdate(map);
+        }
+    }
+
+    public void run() {
+        for (Robot robot : this.robots) {
+            robot.processRobotInput();
+        }
+    }
+
+    @Override
+    public void paint(Graphics graphics, Graphics2D graphics2D) {
+        for (Robot robot : this.robots) {
+            robot.paint(graphics, graphics2D);
+        }
+
+        for (Defense defense : this.defenses) {
+            defense.paint(graphics, graphics2D);
+        }
+    }
+}
