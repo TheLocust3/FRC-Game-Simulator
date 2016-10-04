@@ -1,0 +1,8 @@
+TODO:
+ - Add physics to the ball
+ - Finish example dyn4j program
+ - Refactor connect command
+ - Use logger for all try catches
+ - Move robot to correct side
+ - Give robots controls
+    - Add actions to robot class

@@ -1,0 +1,32 @@
+// Much has happened since this planning doc. For each command just imagine it as converted to JSON as shown in command_example.json
+
+Server: COMMAND CONNECTED;
+Client: COMMAND_RESPONSE CONNECTED;
+Server: COMMAND GET(version);
+Client: COMMAND_RESPONSE 1.0;
+Server: COMMAND GET(robot_name);
+Client: COMMAND_RESPONSE Momentum;
+
+... // Server waits for other robots
+
+// Each client has access to the JSON files, so they know about robots and defenses. No need to send defenses or field.
+
+Server: COMMAND GAME_START;
+Client: COMMAND_RESPONSE TRUE;
+// Server waits for all ready
+Server: COMMAND START_AUTO;
+Client: COMMAND_RESPONSE TRUE;
+
+// Client can set wheel speeds, shoot, or pickup ball
+// Every x milliseconds the server sends the motion vectors of robots/what they are doing + position
+Client: COMMAND MOVE(5) // speed (forward/backwards)
+... // Client is silent until robot crosses
+Client: COMMAND MOVE(0)
+Client: COMMAND TURN(45,5) // angle, speed=
+Client: COMMAND SHOOT(5,0.8); // time it takes, chance of success
+Server: COMMAND_RESPONSE SCORE; // server responds with if the shot was a score/miss/failed
+
+Server: COMMAND START_TELEOP;
+
+// Server continues to send map updates
+
