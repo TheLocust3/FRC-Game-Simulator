@@ -2,10 +2,8 @@ package com.gmail.jakekinsella.socketcommands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,10 +18,7 @@ import java.util.Arrays;
  */
 public class SocketCommand {
 
-    public final String COMMAND_PREFIX = "COMMAND";
-    public final String COMMAND_RESPONSE_PREFIX = "COMMAND_RESPONSE";
-    public final String BOOLEAN_TRUE = "TRUE";
-    public final String BOOLEAN_FALSE = "FALSE";
+    public final String COMMAND_RESPONSE = "COMMAND_RESPONSE";
 
     private Socket socket;
     private PrintWriter socketOutput;
@@ -66,7 +61,7 @@ public class SocketCommand {
         JSONObject jsonObject = (JSONObject) obj;
         Command command = new Command(jsonObject);
 
-        if (command.getName().equals(this.COMMAND_RESPONSE_PREFIX)) {
+        if (command.getName().equals(this.COMMAND_RESPONSE)) {
             return command;
         }
 

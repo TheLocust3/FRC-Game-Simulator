@@ -11,17 +11,17 @@ import java.util.ArrayList;
 public class Command {
 
     private String name;
-    private ArrayList<String> args = new ArrayList<>();
+    private JSONArray args = new JSONArray();
     private JSONObject jsonArgs = new JSONObject();
 
     public Command(String name, ArrayList<String> args) {
         this.name = name;
-        this.args = args;
+        this.args.addAll(args);
     }
 
     public Command(String name, JSONObject args) {
         this.name = name;
-        this.jsonArgs = args;
+        this.args.add(args);
     }
 
     public Command(JSONObject jsonObject) {
@@ -32,23 +32,19 @@ public class Command {
         return this.name;
     }
 
-    public ArrayList<String> getArgs() {
+    public JSONArray getArgs() {
         return args;
+    }
+
+    public Object getArg(int index) {
+        return this.args.get(index);
     }
 
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("command", this.name);
 
-        JSONArray array = new JSONArray();
-
-        if (this.args.isEmpty() && !this.jsonArgs.isEmpty()) {
-            array.add(this.jsonArgs);
-        } else {
-            array.addAll(this.args);
-        }
-
-        obj.put("args", array);
+        obj.put("args", this.args);
 
         return obj;
     }

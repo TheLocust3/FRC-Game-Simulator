@@ -177,7 +177,7 @@ public class Robot implements Paintable {
                 throw new Exception("Robot client isn't the correct API version");
             }
 
-            this.robotName = new GetCommand(this.robotSocket, "robot_name").run().getArgs().get(0);
+            this.robotName = (String) new GetCommand(this.robotSocket, "robot_name").run().getArg(0);
         } catch (Exception e) {
             logger.error(e.toString());
         }

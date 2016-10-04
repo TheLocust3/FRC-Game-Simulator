@@ -3,6 +3,7 @@ TODO:
  - Finish example dyn4j program
  - Refactor connect command
  - Use logger for all try catches
+    - Show stacktrace aswell
  - Move robot to correct side
  - Give robots controls
     - Add actions to robot class

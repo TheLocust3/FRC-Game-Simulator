@@ -27,7 +27,7 @@ public class BooleanCommand extends SocketCommand {
             e.printStackTrace();
         }
 
-        if (response.getArgs().get(0).equals(this.BOOLEAN_TRUE)) {
+        if ((boolean) response.getArg(0)) {
             return true;
         }
 
