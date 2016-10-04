@@ -26,13 +26,15 @@ public class Field extends JPanel {
     private ArrayList<Ball> balls = new ArrayList<>();
     private RobotAlliance blueAlliance, redAlliance;
 
+    private static final Logger logger = LogManager.getLogger();
+
     public Field(RobotAlliance blueAlliance, RobotAlliance redAlliance) {
         try {
             backgroundImage = ImageIO.read(new File("src/main/resources/field.png"));
             backgroundImageWidth = backgroundImage.getWidth(this) / 2;
             backgroundImageHeight = backgroundImage.getHeight(this) / 2;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error in reading the background image", e);
         }
 
         this.blueAlliance = blueAlliance;

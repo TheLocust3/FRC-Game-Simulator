@@ -1,5 +1,8 @@
 package com.gmail.jakekinsella.socketcommands;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -10,6 +13,8 @@ public class GetCommand extends SocketCommand {
 
     String command = "GET";
     String variable;
+
+    private static final Logger logger = LogManager.getLogger();
 
     public GetCommand(Socket socket, String variable) throws IOException {
         super(socket);
@@ -23,7 +28,7 @@ public class GetCommand extends SocketCommand {
         try {
             response = this.getResponse();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in reading response from robot", e);
         }
 
         return response;

@@ -43,7 +43,7 @@ public class Robot implements Paintable {
         try {
             this.robotSocketReader = new BufferedReader(new InputStreamReader(this.robotSocket.getInputStream()));
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in opening a robot socket", e);
         }
 
         this.setup();
@@ -77,7 +77,7 @@ public class Robot implements Paintable {
         try {
             return this.robotSocketReader.ready();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in checking if read is available from robot", e);
         }
 
         return false;
@@ -107,7 +107,7 @@ public class Robot implements Paintable {
         try {
             commandInfo = new ParseCommand(this.robotSocket).run();
         } catch (Exception e) {
-            logger.error(e.toString());
+            logger.error("Error in processing input from robot", e);
         }
 
         logger.debug(commandInfo);
@@ -117,7 +117,7 @@ public class Robot implements Paintable {
         try {
             return new StartCommand(this.robotSocket).run();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in starting game", e);
         }
 
         return false;
@@ -127,7 +127,7 @@ public class Robot implements Paintable {
         try {
             new StopGameCommand(this.robotSocket).run();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in stopping game", e);
         }
     }
 
@@ -135,7 +135,7 @@ public class Robot implements Paintable {
         try {
             return new StartAutoCommand(this.robotSocket).run();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in starting auto", e);
         }
 
         return false;
@@ -145,7 +145,7 @@ public class Robot implements Paintable {
         try {
             new StartTeleopCommand(this.robotSocket).run();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in starting teleop", e);
         }
     }
 
@@ -153,7 +153,7 @@ public class Robot implements Paintable {
         try {
             new MapUpdateCommand(this.robotSocket, map).run();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in sending a map update", e);
         }
     }
 
@@ -173,13 +173,13 @@ public class Robot implements Paintable {
                 throw new Exception("Robot socket did not successfully connect!");
             }
 
-            if (!new GetCommand(this.robotSocket, "api_version").run().getArgs().get(0).equals("1.0")) {
+            if ((double) new GetCommand(this.robotSocket, "api_version").run().getArg(0) != 1.0) {
                 throw new Exception("Robot client isn't the correct API version");
             }
 
             this.robotName = (String) new GetCommand(this.robotSocket, "robot_name").run().getArg(0);
         } catch (Exception e) {
-            logger.error(e.toString());
+            logger.error("Error in setting up a robot", e);
         }
 
         getRobotProperties();

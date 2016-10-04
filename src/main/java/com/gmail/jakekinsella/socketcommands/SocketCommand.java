@@ -80,7 +80,7 @@ public class SocketCommand {
 
             return this.socketReader.readLine();
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error("Error in reading line from socket", e);
         }
 
         return null;

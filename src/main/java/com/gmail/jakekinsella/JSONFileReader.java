@@ -1,5 +1,7 @@
 package com.gmail.jakekinsella;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,6 +17,8 @@ import java.io.IOException;
 public class JSONFileReader {
 
     private JSONObject jsonObject;
+
+    private static final Logger logger = LogManager.getLogger();
 
     public JSONFileReader(String filePath) {
         this.parse(filePath);
@@ -41,7 +45,7 @@ public class JSONFileReader {
             Object obj = parser.parse(text);
             this.jsonObject = (JSONObject) obj;
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            logger.error("Error in parsing JSON", e);
         }
     }
 }

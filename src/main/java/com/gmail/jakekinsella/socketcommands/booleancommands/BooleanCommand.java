@@ -2,6 +2,8 @@ package com.gmail.jakekinsella.socketcommands.booleancommands;
 
 import com.gmail.jakekinsella.socketcommands.Command;
 import com.gmail.jakekinsella.socketcommands.SocketCommand;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -12,6 +14,8 @@ import java.net.Socket;
 public class BooleanCommand extends SocketCommand {
 
     private String command;
+
+    private static final Logger logger = LogManager.getLogger();
 
     public BooleanCommand(Socket socket, String command) throws IOException {
         super(socket);
@@ -24,13 +28,9 @@ public class BooleanCommand extends SocketCommand {
         try {
             response = this.getResponse();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in reading response", e);
         }
 
-        if ((boolean) response.getArg(0)) {
-            return true;
-        }
-
-        return false;
+        return (boolean) response.getArg(0);
     }
 }

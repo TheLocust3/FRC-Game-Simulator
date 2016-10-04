@@ -10,7 +10,7 @@ s.puts "{\"command\": \"COMMAND_RESPONSE\",\"args\": [true]}"
 
 puts JSON.parse s.gets.chomp
 #s.puts "COMMAND_RESPONSE 1.0"
-s.puts "{\"command\": \"COMMAND_RESPONSE\",\"args\": [\"1.0\"]}"
+s.puts "{\"command\": \"COMMAND_RESPONSE\",\"args\": [1.0]}"
 
 puts JSON.parse s.gets.chomp
 #s.puts "COMMAND_RESPONSE Momentum"
