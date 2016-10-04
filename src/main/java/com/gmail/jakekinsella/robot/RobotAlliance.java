@@ -5,6 +5,7 @@ import com.gmail.jakekinsella.field.defense.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class RobotAlliance implements Paintable {
         }
     }
 
-    public void sendMapUpdate(String map) {
+    public void sendMapUpdate(JSONObject map) {
         for (Robot robot : this.robots) {
             robot.sendMapUpdate(map);
         }

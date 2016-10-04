@@ -2,6 +2,10 @@ package com.gmail.jakekinsella.socketcommands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +28,7 @@ public class SocketCommand {
     private Socket socket;
     private PrintWriter socketOutput;
     private BufferedReader socketReader;
+    private JSONParser parser = new JSONParser();
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -33,23 +38,36 @@ public class SocketCommand {
         this.socketReader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
     }
 
-    protected void sendCommand(String command, String... args) {
-        ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
+    protected void sendCommand(Command command) {
+        String rawJSON = command.toJSON().toJSONString();
 
-        String fullCommand = String.format("%s %s(%s)", this.COMMAND_PREFIX, command, String.join(",", argsList));
-
-        logger.debug("Sending: " + fullCommand);
-        writeln(fullCommand);
+        logger.debug("Sending: " + rawJSON);
+        writeln(rawJSON);
     }
 
-    protected String getResponse() throws Exception {
+    protected void sendCommand(String command, ArrayList<String> args) {
+        Command newCommand = new Command(command, args);
+        sendCommand(newCommand);
+    }
+
+    protected void sendCommand(String command, JSONObject args) {
+        Command newCommand = new Command(command, args);
+        sendCommand(newCommand);
+    }
+
+    protected void sendCommand(String command, String... args) {
+        sendCommand(command, new ArrayList<>(Arrays.asList(args)));
+    }
+
+    protected Command getResponse() throws Exception {
         String response = readln();
 
-        if (response.contains(this.COMMAND_RESPONSE_PREFIX + " ")) {
-            String finalResponse = response.replace(this.COMMAND_RESPONSE_PREFIX + " ", "");
+        Object obj = parser.parse(response);
+        JSONObject jsonObject = (JSONObject) obj;
+        Command command = new Command(jsonObject);
 
-            logger.debug("Received: " + finalResponse);
-            return finalResponse;
+        if (command.getName().equals(this.COMMAND_RESPONSE_PREFIX)) {
+            return command;
         }
 
         throw new Exception("Client failed to respond correctly");
@@ -59,7 +77,7 @@ public class SocketCommand {
         this.socketOutput.println(out);
     }
 
-    private String readln() {
+    protected String readln() {
         try {
             while (!this.socketReader.ready()) {
                 logger.debug("Waiting to receive response from client...");
@@ -67,8 +85,9 @@ public class SocketCommand {
 
             return this.socketReader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
-            return "";
+            logger.error(e.toString());
         }
+
+        return null;
     }
 }

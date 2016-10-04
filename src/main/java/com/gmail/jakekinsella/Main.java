@@ -16,7 +16,7 @@ public class Main {
     public static void main(String args[]) throws IOException {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(760, 394);
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
         RobotServer robotServer = new RobotServer(2345);
 

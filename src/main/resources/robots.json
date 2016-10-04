@@ -1,8 +1,8 @@
 {
   "Momentum": {
     "allianceColor": "RED",
-    "startDefense": "1",
-    "width": "50",
-    "height": "40"
+    "startDefense": 1,
+    "width": 50,
+    "height": 40
   }
 }

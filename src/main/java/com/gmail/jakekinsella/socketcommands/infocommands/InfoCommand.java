@@ -4,6 +4,8 @@ import com.gmail.jakekinsella.socketcommands.SocketCommand;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by jakekinsella on 9/29/16.
@@ -20,6 +22,6 @@ public class InfoCommand extends SocketCommand {
     }
 
     public void run() {
-        this.sendCommand(this.command, args);
+        this.sendCommand(this.command, this.args);
     }
 }

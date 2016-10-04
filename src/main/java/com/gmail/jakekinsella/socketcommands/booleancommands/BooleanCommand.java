@@ -1,5 +1,6 @@
 package com.gmail.jakekinsella.socketcommands.booleancommands;
 
+import com.gmail.jakekinsella.socketcommands.Command;
 import com.gmail.jakekinsella.socketcommands.SocketCommand;
 
 import java.io.IOException;
@@ -19,14 +20,14 @@ public class BooleanCommand extends SocketCommand {
 
     public boolean run() {
         this.sendCommand(this.command);
-        String response = null;
+        Command response = null;
         try {
             response = this.getResponse();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (response.equals(this.BOOLEAN_TRUE)) {
+        if (response.getArgs().get(0).equals(this.BOOLEAN_TRUE)) {
             return true;
         }
 

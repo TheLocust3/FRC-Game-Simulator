@@ -17,9 +17,9 @@ public class GetCommand extends SocketCommand {
         this.variable = variable;
     }
 
-    public String run() {
+    public Command run() {
         this.sendCommand(this.command, this.variable);
-        String response = null;
+        Command response = null;
         try {
             response = this.getResponse();
         } catch (Exception e) {

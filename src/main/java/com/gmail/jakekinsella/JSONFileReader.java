@@ -12,11 +12,11 @@ import java.io.IOException;
 /**
  * Created by jakekinsella on 9/23/16.
  */
-public class JSONReader {
+public class JSONFileReader {
 
     private JSONObject jsonObject;
 
-    public JSONReader(String filePath) {
+    public JSONFileReader(String filePath) {
         this.parse(filePath);
     }
 

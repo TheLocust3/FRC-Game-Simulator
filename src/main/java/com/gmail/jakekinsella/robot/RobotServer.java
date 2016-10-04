@@ -1,6 +1,6 @@
 package com.gmail.jakekinsella.robot;
 
-import com.gmail.jakekinsella.JSONReader;
+import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Mode;
 import com.gmail.jakekinsella.field.Field;
 import com.gmail.jakekinsella.field.defense.*;
@@ -46,15 +46,15 @@ public class RobotServer {
      * Waits for connection from six robot programs
      */
     public void connectAllRobots() throws IOException {
-        JSONReader jsonReader = new JSONReader("src/main/resources/robots.json");
-        int numRobots = jsonReader.getJSONObject().size();
+        JSONFileReader jsonFileReader = new JSONFileReader("src/main/resources/robots.json");
+        int numRobots = jsonFileReader.getJSONObject().size();
 
         for (int i = 0; i < numRobots; i++) {
             logger.debug("Waiting for robot socket connection");
             Socket robotSocket = serverSocket.accept();
             logger.debug("Robot socket connected");
 
-            Robot robot = new Robot(robotSocket, jsonReader);
+            Robot robot = new Robot(robotSocket, jsonFileReader);
 
             if (robot.getColor() == RobotAllianceColor.RED) {
                 redAlliance.addRobot(robot);
@@ -104,11 +104,11 @@ public class RobotServer {
         logger.debug("Sending map update");
 
         JSONObject obj = new JSONObject();
-        obj.put(blueAlliance.getColor().toString(), blueAlliance.toJSONArray());
-        obj.put(redAlliance.getColor().toString(), redAlliance.toJSONArray());
+        obj.put(blueAlliance.getColor(), blueAlliance.toJSONArray());
+        obj.put(redAlliance.getColor(), redAlliance.toJSONArray());
 
-        blueAlliance.sendMapUpdate(obj.toJSONString());
-        redAlliance.sendMapUpdate(obj.toJSONString());
+        blueAlliance.sendMapUpdate(obj);
+        redAlliance.sendMapUpdate(obj);
     }
 
     public void run() {
@@ -143,9 +143,9 @@ public class RobotServer {
     }
 
     private void setupDefenses() {
-        JSONReader jsonReader = new JSONReader("src/main/resources/defenses.json");
-        JSONArray redStringDefenses = ((JSONArray) jsonReader.getJSONObject().get("RED"));
-        JSONArray blueStringDefenses = ((JSONArray) jsonReader.getJSONObject().get("BLUE"));
+        JSONFileReader jsonFileReader = new JSONFileReader("src/main/resources/defenses.json");
+        JSONArray redStringDefenses = ((JSONArray) jsonFileReader.getJSONObject().get("RED"));
+        JSONArray blueStringDefenses = ((JSONArray) jsonFileReader.getJSONObject().get("BLUE"));
 
         ArrayList<Defense> redDefenses = new ArrayList<>();
 
