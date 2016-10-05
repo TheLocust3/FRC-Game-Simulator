@@ -1,6 +1,6 @@
 TODO:
  - Add physics to the ball
- - Finish example dyn4j program
- - Move robot to correct side
+ - Add physics to robot
+ - Learn jbox2d
  - Give robots controls
     - Add actions to robot class

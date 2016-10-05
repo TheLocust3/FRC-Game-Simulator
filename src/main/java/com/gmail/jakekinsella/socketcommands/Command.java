@@ -48,4 +48,8 @@ public class Command {
 
         return obj;
     }
+
+    public String toString() {
+        return toJSON().toJSONString();
+    }
 }

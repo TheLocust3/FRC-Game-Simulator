@@ -1,5 +1,6 @@
 package com.gmail.jakekinsella.socketcommands.parsecommand;
 
+import com.gmail.jakekinsella.socketcommands.Command;
 import com.gmail.jakekinsella.socketcommands.SocketCommand;
 
 import java.io.IOException;
@@ -12,38 +13,22 @@ import java.util.Collections;
  */
 public class ParseCommand extends SocketCommand {
 
-    public final String prefix = "COMMAND";
-
     public ParseCommand(Socket socket) throws IOException {
         super(socket);
     }
 
-    public ArrayList<String> run() throws Exception {
-        ArrayList<String> commandInfo = new ArrayList<>();
-
-        String command = readln();
-
-        if (command.indexOf(this.prefix + " ") == -1) {
-            throw new Exception("Client sent invalid command. Received: " + this.prefix);
-        }
-        command = command.replace(this.prefix + " ", "");
-
-        String commandName = command.substring(0, command.indexOf("("));
-        command = command.substring(command.indexOf("(") + 1, command.indexOf(")"));
-        String[] commandArgs = command.split(",");
+    public Command run() throws Exception {
+        Command command = parseLine();
 
         boolean found = false;
         for (ClientCommand clientCommand : ClientCommand.values()) {
-            if (clientCommand.toString().equals(commandName)) {
+            if (clientCommand.toString().equals(command.getName())) {
                 found = true;
                 break;
             }
         }
-        if (!found) { throw new Exception("Client send unknown command: " + commandName); }
+        if (!found) { throw new Exception("Client send unknown command: " + command.getName()); }
 
-        commandInfo.add(commandName);
-        Collections.addAll(commandInfo, commandArgs);
-
-        return commandInfo;
+        return command;
     }
 }

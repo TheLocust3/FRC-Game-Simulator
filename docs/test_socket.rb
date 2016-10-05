@@ -25,10 +25,10 @@ puts JSON.parse s.gets.chomp
 s.puts "{\"command\": \"COMMAND_RESPONSE\",\"args\": [true]}"
 
 sleep 1
-s.puts "COMMAND MOVE(5)"
 
 while true
     puts JSON.parse s.gets.chomp
+    s.puts "{\"command\": \"SHOOT\",\"args\": [5,0.8]}"
 end
 
 s.close             # close socket when done

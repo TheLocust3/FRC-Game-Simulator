@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,17 +56,23 @@ public class SocketCommand {
     }
 
     protected Command getResponse() throws Exception {
-        String response = readln();
-
-        Object obj = parser.parse(response);
-        JSONObject jsonObject = (JSONObject) obj;
-        Command command = new Command(jsonObject);
+        Command command = parseLine();
 
         if (command.getName().equals(this.COMMAND_RESPONSE)) {
             return command;
         }
 
         throw new Exception("Client failed to respond correctly");
+    }
+
+    protected Command parseLine() throws ParseException {
+        String response = readln();
+
+        Object obj = parser.parse(response);
+        JSONObject jsonObject = (JSONObject) obj;
+        Command command = new Command(jsonObject);
+
+        return command;
     }
 
     private void writeln(String out) {

@@ -4,6 +4,9 @@ import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.defense.Defense;
+import com.gmail.jakekinsella.robotactions.Action;
+import com.gmail.jakekinsella.robotactions.ShootAction;
+import com.gmail.jakekinsella.socketcommands.Command;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
 import com.gmail.jakekinsella.socketcommands.GetCommand;
 import com.gmail.jakekinsella.socketcommands.booleancommands.StartAutoCommand;
@@ -11,6 +14,7 @@ import com.gmail.jakekinsella.socketcommands.booleancommands.StartCommand;
 import com.gmail.jakekinsella.socketcommands.MapUpdateCommand;
 import com.gmail.jakekinsella.socketcommands.infocommands.StartTeleopCommand;
 import com.gmail.jakekinsella.socketcommands.infocommands.StopGameCommand;
+import com.gmail.jakekinsella.socketcommands.parsecommand.ClientCommand;
 import com.gmail.jakekinsella.socketcommands.parsecommand.ParseCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +37,7 @@ public class Robot implements Paintable {
     private String robotName;
     private int defensePosition;
     private JSONFileReader jsonFileReader;
+    private Action currentAction;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -103,7 +108,7 @@ public class Robot implements Paintable {
     public void processRobotInput() {
         if (!this.isReadAvailable()) { return; }
 
-        ArrayList<String> commandInfo = new ArrayList<>();
+        Command commandInfo = null;
         try {
             commandInfo = new ParseCommand(this.robotSocket).run();
         } catch (Exception e) {
@@ -111,6 +116,21 @@ public class Robot implements Paintable {
         }
 
         logger.debug(commandInfo);
+
+        switch (ClientCommand.valueOf(commandInfo.getName())) {
+            case SHOOT:
+                this.currentAction = new ShootAction(commandInfo);
+                break;
+            case TURN:
+                logger.error("TURN action not implemented!");
+                break;
+            case MOVE:
+                logger.error("MOVE action not implemented!");
+                break;
+            case PICKUP:
+                logger.error("PICKUP action not implemented!");
+                break;
+        }
     }
 
     public boolean startGame() {
@@ -193,8 +213,23 @@ public class Robot implements Paintable {
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
 
-        int[] position = Defense.getPosition(this.color, this.defensePosition);
-        this.x = Main.FRAME_WIDTH / 2 - (this.width / 2);
+
+        RobotAllianceColor startColor; // Robots start in front of the opposite defenses
+        if (this.color == RobotAllianceColor.BLUE) {
+            startColor = RobotAllianceColor.RED;
+        } else {
+            startColor = RobotAllianceColor.BLUE;
+        }
+
+        int[] position = Defense.getPosition(startColor, this.defensePosition);
+        this.x = Main.FRAME_WIDTH / 2;
+
+        if (this.color == RobotAllianceColor.BLUE) {
+            this.x -= 10;
+        } else {
+            this.x -= (this.width * 2) - 10;
+        }
+
         this.y = position[1] - (this.height / 2);
     }
 }
