@@ -5,6 +5,7 @@ import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robotactions.Action;
+import com.gmail.jakekinsella.robotactions.NoneAction;
 import com.gmail.jakekinsella.robotactions.ShootAction;
 import com.gmail.jakekinsella.socketcommands.Command;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
@@ -37,7 +38,7 @@ public class Robot implements Paintable {
     private String robotName;
     private int defensePosition;
     private JSONFileReader jsonFileReader;
-    private Action currentAction;
+    private Action currentAction = new NoneAction();
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -96,7 +97,7 @@ public class Robot implements Paintable {
         obj.put("height", this.height);
         obj.put("x", this.x);
         obj.put("y", this.y);
-        obj.put("action", "NONE"); // TODO: add actions to robot and send them
+        obj.put("action", this.currentAction.toString()); // TODO: add actions to robot and send them
 
         return obj;
     }
@@ -115,7 +116,7 @@ public class Robot implements Paintable {
             logger.error("Error in processing input from robot", e);
         }
 
-        logger.debug(commandInfo);
+        logger.debug("Received: " + commandInfo + " from robot");
 
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:

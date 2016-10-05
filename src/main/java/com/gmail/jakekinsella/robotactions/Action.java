@@ -12,4 +12,8 @@ public class Action {
     public Action(Command command) {
         this.command = command;
     }
+
+    public String toString() {
+        return this.command.getName();
+    }
 }

@@ -7,13 +7,13 @@ import com.gmail.jakekinsella.socketcommands.Command;
  */
 public class ShootAction extends Action {
 
-    private int actionTime;
+    private long actionTime;
     private double successChance;
 
     public ShootAction(Command command) {
         super(command);
 
-        this.actionTime = (int) command.getArg(0);
+        this.actionTime = (long) command.getArg(0);
         this.successChance = (double) command.getArg(1);
     }
 }
