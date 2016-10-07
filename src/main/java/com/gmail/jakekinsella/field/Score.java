@@ -1,13 +1,20 @@
 package com.gmail.jakekinsella.field;
 
+import com.gmail.jakekinsella.Paintable;
+import com.gmail.jakekinsella.robot.RobotAllianceColor;
+
+import java.awt.*;
+
 /**
  * Created by jakekinsella on 10/7/16.
  */
-public class Score {
+public class Score implements Paintable {
 
     private int score;
+    private RobotAllianceColor robotAllianceColor;
 
-    public Score() {
+    public Score(RobotAllianceColor robotAllianceColor) {
+        this.robotAllianceColor = robotAllianceColor;
         this.score = 0;
     }
 
@@ -25,5 +32,15 @@ public class Score {
 
     public void scoreDefenseCross() {
         this.score += 5;
+    }
+
+    @Override
+    public void paint(Graphics graphics, Graphics2D graphics2D) {
+        graphics.setFont(new Font("Arial", Font.PLAIN, 24));
+        if (this.robotAllianceColor == RobotAllianceColor.BLUE) {
+            graphics.drawString("Blue: " + this.getScore(), 0, 20);
+        } else {
+            graphics.drawString("Red: " + this.getScore(), Field.getBackgroundImageWidth() - 100, 20);
+        }
     }
 }
