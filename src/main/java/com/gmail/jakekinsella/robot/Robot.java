@@ -35,6 +35,7 @@ public class Robot implements Paintable {
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
+    private RobotAlliance robotAlliance;
     private String robotName;
     private int defensePosition;
     private JSONFileReader jsonFileReader;
@@ -73,6 +74,14 @@ public class Robot implements Paintable {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public RobotAlliance getRobotAlliance() {
+        return this.robotAlliance;
+    }
+
+    public void setRobotAlliance(RobotAlliance robotAlliance) {
+        this.robotAlliance =robotAlliance;
     }
 
     public String getRobotName() {

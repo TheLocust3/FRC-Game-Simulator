@@ -1,6 +1,8 @@
 package com.gmail.jakekinsella.robot;
 
 import com.gmail.jakekinsella.Paintable;
+import com.gmail.jakekinsella.field.Field;
+import com.gmail.jakekinsella.field.Score;
 import com.gmail.jakekinsella.field.defense.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class RobotAlliance implements Paintable {
 
     private RobotAllianceColor color;
+    private Score score;
     private ArrayList<Robot> robots;
     private ArrayList<Defense> defenses = new ArrayList<>();
 
@@ -23,6 +26,7 @@ public class RobotAlliance implements Paintable {
 
     public RobotAlliance(RobotAllianceColor color) {
         this.color = color;
+        this.score = new Score();
         this.robots = new ArrayList<>();
 
         this.defenses.add(new LowbarDefense(1, color));
@@ -34,6 +38,10 @@ public class RobotAlliance implements Paintable {
 
     public RobotAllianceColor getColor() {
         return this.color;
+    }
+
+    public Score getScore() {
+        return this.score;
     }
 
     public void addRobot(Robot robot) {
@@ -101,6 +109,13 @@ public class RobotAlliance implements Paintable {
 
         for (Defense defense : this.defenses) {
             defense.paint(graphics, graphics2D);
+        }
+
+        graphics.setFont(new Font("Arial", Font.PLAIN, 24));
+        if (this.color == RobotAllianceColor.BLUE) {
+            graphics.drawString("Blue: " + this.score.getScore(), 0, 20);
+        } else {
+            graphics.drawString("Red: " + this.score.getScore(), Field.getBackgroundImageWidth() - 100, 20);
         }
     }
 }

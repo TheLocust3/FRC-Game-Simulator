@@ -57,8 +57,10 @@ public class RobotServer {
             Robot robot = new Robot(robotSocket, jsonFileReader);
 
             if (robot.getColor() == RobotAllianceColor.RED) {
+                robot.setRobotAlliance(redAlliance);
                 redAlliance.addRobot(robot);
             } else {
+                robot.setRobotAlliance(blueAlliance);
                 blueAlliance.addRobot(robot);
             }
         }

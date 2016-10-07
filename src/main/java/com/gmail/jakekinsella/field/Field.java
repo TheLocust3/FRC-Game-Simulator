@@ -21,7 +21,7 @@ public class Field extends JPanel {
     public final int BALL_NUMBER = 6;
 
     private Image backgroundImage;
-    private int backgroundImageWidth, backgroundImageHeight;
+    private static int backgroundImageWidth, backgroundImageHeight;
 
     private ArrayList<Ball> balls = new ArrayList<>();
     private RobotAlliance blueAlliance, redAlliance;
@@ -43,10 +43,18 @@ public class Field extends JPanel {
         setupField();
     }
 
+    public static int getBackgroundImageWidth() {
+        return backgroundImageWidth;
+    }
+
+    public static int getBackgroundImageHeight() {
+        return backgroundImageHeight;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-        graphics.drawImage(this.backgroundImage, 0, 0, this.backgroundImageWidth, this.backgroundImageHeight, this);
+        graphics.drawImage(this.backgroundImage, 0, 0, backgroundImageWidth, backgroundImageHeight, this);
 
         blueAlliance.paint(graphics, graphics2D);
         redAlliance.paint(graphics, graphics2D);
@@ -57,9 +65,9 @@ public class Field extends JPanel {
     }
 
     private void setupField() {
-        int interval = this.backgroundImageHeight / (this.BALL_NUMBER + 1);
-        for (int i = interval; i < this.backgroundImageHeight - 1; i += interval) { // The - 1 prevents a 7th ball from being drawn
-            this.balls.add(new Ball(this.backgroundImageWidth / 2, i));
+        int interval = backgroundImageHeight / (this.BALL_NUMBER + 1);
+        for (int i = interval; i < backgroundImageHeight - 1; i += interval) { // The - 1 prevents a 7th ball from being drawn
+            this.balls.add(new Ball(backgroundImageWidth / 2, i));
         }
     }
 }
