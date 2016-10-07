@@ -89,7 +89,7 @@ public class RobotAlliance implements Paintable {
 
     public void run() {
         for (Robot robot : this.robots) {
-            robot.processRobotInput();
+            robot.tick();
         }
     }
 

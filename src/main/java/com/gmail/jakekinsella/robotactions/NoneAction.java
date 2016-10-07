@@ -10,6 +10,6 @@ import java.util.ArrayList;
 public class NoneAction extends Action {
 
     public NoneAction() {
-        super(new Command("NONE", new ArrayList<>()));
+        super(new Command("NONE", new ArrayList<>()), null);
     }
 }

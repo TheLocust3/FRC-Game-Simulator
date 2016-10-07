@@ -26,9 +26,14 @@ s.puts "{\"command\": \"COMMAND_RESPONSE\",\"args\": [true]}"
 
 sleep 1
 
+i = 0
 while true
     puts JSON.parse s.gets.chomp
-    s.puts "{\"command\": \"SHOOT\",\"args\": [5,0.8]}"
+
+    if i == 0
+        s.puts "{\"command\": \"SHOOT\",\"args\": [5000,0.8]}"
+        i += 1
+    end
 end
 
 s.close             # close socket when done

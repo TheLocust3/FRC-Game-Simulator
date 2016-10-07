@@ -106,6 +106,12 @@ public class Robot implements Paintable {
         this.robotSocket.close();
     }
 
+    // Process all any new commands and give actions time to update
+    public void tick() {
+        currentAction.tick();
+        processRobotInput();
+    }
+
     public void processRobotInput() {
         if (!this.isReadAvailable()) { return; }
 
@@ -120,7 +126,7 @@ public class Robot implements Paintable {
 
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
-                this.currentAction = new ShootAction(commandInfo);
+                this.currentAction = new ShootAction(commandInfo, this);
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -132,6 +138,10 @@ public class Robot implements Paintable {
                 logger.error("PICKUP action not implemented!");
                 break;
         }
+    }
+
+    public void actionFinish() {
+        this.currentAction = new NoneAction();
     }
 
     public boolean startGame() {
