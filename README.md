@@ -10,6 +10,6 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Add physics to the ball  
  - Add physics to robot  
  - Learn jbox2d  
- - Create a README and push to Github  
+ - Write a better README and push to Github  
  - Give robots controls  
    - Add actions to robot class  

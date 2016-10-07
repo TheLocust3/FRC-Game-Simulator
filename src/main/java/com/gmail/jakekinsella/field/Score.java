@@ -2,6 +2,7 @@ package com.gmail.jakekinsella.field;
 
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.robot.RobotAllianceColor;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 
@@ -32,6 +33,14 @@ public class Score implements Paintable {
 
     public void scoreDefenseCross() {
         this.score += 5;
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("score", this.score);
+
+        return jsonObject;
     }
 
     @Override

@@ -109,6 +109,12 @@ public class RobotServer {
         obj.put(blueAlliance.getColor(), blueAlliance.toJSONArray());
         obj.put(redAlliance.getColor(), redAlliance.toJSONArray());
 
+        JSONObject scoreObj = new JSONObject();
+        scoreObj.put(blueAlliance.getColor(), blueAlliance.scoreToJSONObject());
+        scoreObj.put(redAlliance.getColor(), redAlliance.scoreToJSONObject());
+
+        obj.put("SCORE", scoreObj);
+
         blueAlliance.sendMapUpdate(obj);
         redAlliance.sendMapUpdate(obj);
     }
