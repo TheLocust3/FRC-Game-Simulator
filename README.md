@@ -13,3 +13,7 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Write a better README and push to Github  
  - Give robots controls  
    - Add actions to robot class  
+ - Pull success chances of action from XML
+ - Make Shoot and Pickup actions DRY
+ - Use some trig to calculate a box in the front of the robot
+   - Then check for objects in that box

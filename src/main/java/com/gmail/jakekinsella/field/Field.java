@@ -51,6 +51,12 @@ public class Field extends JPanel {
         return backgroundImageHeight;
     }
 
+    public ArrayList<Object> detectObjectInBox(int x, int y, int width, double angle) {
+        ArrayList<Object> objects = new ArrayList<>();
+
+        return objects;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 

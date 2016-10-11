@@ -32,8 +32,13 @@ while true
 
     if i == 0
         s.puts "{\"command\": \"SHOOT\",\"args\": [5000,0.8]}"
-        i += 1
     end
+
+    if i == 10
+        s.puts "{\"command\": \"PICKUP\",\"args\": [5000,0.8]}"
+    end
+
+    i += 1
 end
 
 s.close             # close socket when done

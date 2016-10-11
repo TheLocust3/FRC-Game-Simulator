@@ -6,6 +6,7 @@ import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robotactions.Action;
 import com.gmail.jakekinsella.robotactions.NoneAction;
+import com.gmail.jakekinsella.robotactions.PickupAction;
 import com.gmail.jakekinsella.robotactions.ShootAction;
 import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
@@ -31,12 +32,15 @@ import java.util.ArrayList;
 public class Robot implements Paintable {
 
     private int x, y, width, height;
+    private double angle;
+    private String robotName;
+    private int defensePosition;
+    private RobotSide pickupSide;
+
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
     private RobotAlliance robotAlliance;
-    private String robotName;
-    private int defensePosition;
     private JSONFileReader jsonFileReader;
     private Action currentAction = new NoneAction();
 
@@ -110,6 +114,25 @@ public class Robot implements Paintable {
         return obj;
     }
 
+    public Object getObjectDirectly(RobotSide robotSide) {
+        int detectLength = 20;
+        int startX = 0, startY = 0;
+
+        switch (robotSide) {
+            case FRONT:
+                startX = this.getX();
+                break;
+            case BACK:
+                break;
+            case LEFT:
+                break;
+            case RIGHT:
+                break;
+        }
+
+        return RobotServer.getField().detectObjectInBox(startX, startY, detectLength, this.angle);
+    }
+
     public void shutdownRobot() throws IOException {
         this.robotSocket.close();
     }
@@ -135,6 +158,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 this.currentAction = new ShootAction(commandInfo, this);
+                logger.info(this.getRobotName() + " has started to shoot a ball");
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -143,12 +167,13 @@ public class Robot implements Paintable {
                 logger.error("MOVE action not implemented!");
                 break;
             case PICKUP:
-                logger.error("PICKUP action not implemented!");
+                this.currentAction = new PickupAction(commandInfo, this, this.pickupSide);
+                logger.info(this.getRobotName() + " has started to pickup a ball");
                 break;
         }
     }
 
-    public void actionFinish() {
+    public void sendActionResponse() {
         JSONObject command = new JSONObject();
         command.put("command", SocketCommand.COMMAND_RESPONSE);
 
@@ -163,7 +188,9 @@ public class Robot implements Paintable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void actionFinish() {
         this.currentAction = new NoneAction();
     }
 
@@ -243,6 +270,7 @@ public class Robot implements Paintable {
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
 
         this.color = RobotAllianceColor.valueOf((String) jsonRobot.get("allianceColor"));
+        this.pickupSide = RobotSide.valueOf((String) jsonRobot.get("pickupSide"));
         this.defensePosition = ((Long) jsonRobot.get("startDefense")).intValue();
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
@@ -251,8 +279,10 @@ public class Robot implements Paintable {
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {
             startColor = RobotAllianceColor.RED;
+            angle = 90;
         } else {
             startColor = RobotAllianceColor.BLUE;
+            angle = -90;
         }
 
         int[] position = Defense.getPosition(startColor, this.defensePosition);

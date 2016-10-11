@@ -26,7 +26,7 @@ public class RobotServer {
     private long modeStartTime, lastMapUpdateTime;
     private ServerSocket serverSocket;
     private RobotAlliance redAlliance, blueAlliance;
-    private Field field;
+    private static Field field;
     private Mode mode;
 
     private static final Logger logger = LogManager.getLogger();
@@ -38,8 +38,8 @@ public class RobotServer {
         this.setupGame();
     }
 
-    public Field getField() {
-        return this.field;
+    public static Field getField() {
+        return field;
     }
 
     /**
