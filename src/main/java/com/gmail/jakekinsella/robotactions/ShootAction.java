@@ -40,6 +40,8 @@ public class ShootAction extends Action {
                 logger.info(this.robot.getRobotName() + " has shot a ball and missed the highgoal");
             }
 
+            this.success = score;
+
             this.robot.getRobotAlliance().getScore().scoreHighgoal(); // This flipping line...
             this.robot.actionFinish();
         }

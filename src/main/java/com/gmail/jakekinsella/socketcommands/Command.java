@@ -12,7 +12,6 @@ public class Command {
 
     private String name;
     private JSONArray args = new JSONArray();
-    private JSONObject jsonArgs = new JSONObject();
 
     public Command(String name, ArrayList<String> args) {
         this.name = name;

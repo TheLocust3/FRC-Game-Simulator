@@ -7,18 +7,17 @@ import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robotactions.Action;
 import com.gmail.jakekinsella.robotactions.NoneAction;
 import com.gmail.jakekinsella.robotactions.ShootAction;
-import com.gmail.jakekinsella.socketcommands.Command;
+import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
-import com.gmail.jakekinsella.socketcommands.GetCommand;
 import com.gmail.jakekinsella.socketcommands.booleancommands.StartAutoCommand;
 import com.gmail.jakekinsella.socketcommands.booleancommands.StartCommand;
-import com.gmail.jakekinsella.socketcommands.MapUpdateCommand;
 import com.gmail.jakekinsella.socketcommands.infocommands.StartTeleopCommand;
 import com.gmail.jakekinsella.socketcommands.infocommands.StopGameCommand;
 import com.gmail.jakekinsella.socketcommands.parsecommand.ClientCommand;
 import com.gmail.jakekinsella.socketcommands.parsecommand.ParseCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -150,6 +149,21 @@ public class Robot implements Paintable {
     }
 
     public void actionFinish() {
+        JSONObject command = new JSONObject();
+        command.put("command", SocketCommand.COMMAND_RESPONSE);
+
+        JSONArray array = new JSONArray();
+        array.add(this.currentAction.toString());
+        array.add(this.currentAction.getSuccess());
+        command.put("args", array);
+
+        Command response = new Command(command);
+        try {
+            new ResponseCommand(this.robotSocket, response).run();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         this.currentAction = new NoneAction();
     }
 

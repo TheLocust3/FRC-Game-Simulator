@@ -19,7 +19,7 @@ import java.util.Arrays;
  */
 public class SocketCommand {
 
-    public final String COMMAND_RESPONSE = "COMMAND_RESPONSE";
+    public static final String COMMAND_RESPONSE = "COMMAND_RESPONSE";
 
     private Socket socket;
     private PrintWriter socketOutput;
@@ -58,7 +58,7 @@ public class SocketCommand {
     protected Command getResponse() throws Exception {
         Command command = parseLine();
 
-        if (command.getName().equals(this.COMMAND_RESPONSE)) {
+        if (command.getName().equals(COMMAND_RESPONSE)) {
             return command;
         }
 
