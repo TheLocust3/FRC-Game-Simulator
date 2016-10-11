@@ -7,12 +7,8 @@ A simple simulator that communicates to the server throught sockets. This simula
 As you can see, many pieces that are often considered an integral part of FRC have been purposely left out. This is because this simulator was built to train AI on. Naturally, you can't train untrustworthy AI on real robots for fear of breaking them, so this is the next best thing. The AI was also built to be a top down bot, that doesn't care about "silly" details like moving its appendages. The AI looks only commands the bots with things like shoot and pickup so it made sense to make a simulator that also doesn't care about those details.  
   
 ### To-Do  
- - Add physics to the ball  
- - Add physics to robot  
- - Learn jbox2d  
- - Write a better README and push to Github  
- - Give robots controls  
-   - Add actions to robot class  
+ - Write a better README and push to Github
+ - Use jbox2d to add movement to balls and the robot  
  - Pull success chances of action from XML
  - Make Shoot and Pickup actions DRY
  - Use some trig to calculate a box in the front of the robot

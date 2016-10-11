@@ -114,23 +114,26 @@ public class Robot implements Paintable {
         return obj;
     }
 
-    public Object getObjectDirectly(RobotSide robotSide) {
+    public Object getObjectInFrontOf(RobotSide robotSide) {
         int detectLength = 20;
-        int startX = 0, startY = 0;
+        double boxAngle = 0;
 
         switch (robotSide) {
             case FRONT:
-                startX = this.getX();
+                boxAngle = this.angle;
                 break;
             case BACK:
+                boxAngle = this.angle + 180;
                 break;
             case LEFT:
+                boxAngle = this.angle + 270;
                 break;
             case RIGHT:
+                boxAngle = this.angle + 90;
                 break;
         }
 
-        return RobotServer.getField().detectObjectInBox(startX, startY, detectLength, this.angle);
+        return RobotServer.getField().detectObjectInBox(this.getX(), this.getY(), detectLength, this.angle);
     }
 
     public void shutdownRobot() throws IOException {

@@ -51,7 +51,7 @@ public class Field extends JPanel {
         return backgroundImageHeight;
     }
 
-    public ArrayList<Object> detectObjectInBox(int x, int y, int width, double angle) {
+    public ArrayList<Object> detectObjectInBox(int centerX, int centerY, int boxLength, double boxAngle) {
         ArrayList<Object> objects = new ArrayList<>();
 
         return objects;
