@@ -65,6 +65,10 @@ public class RobotAlliance implements Paintable {
         return this.score.toJSONObject();
     }
 
+    public ArrayList<Defense> getDefenses() {
+        return this.defenses;
+    }
+
     public void setAllDefenses(ArrayList<Defense> defenses) {
         this.defenses = defenses;
     }

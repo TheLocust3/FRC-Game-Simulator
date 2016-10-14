@@ -1,6 +1,8 @@
 package com.gmail.jakekinsella.field;
 
+import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robot.*;
+import com.gmail.jakekinsella.robot.Robot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,32 +50,46 @@ public class Field extends JPanel {
         return backgroundImageHeight;
     }
 
-    public ArrayList<Object> detectObjectInRectangle(Shape rectangle) {
-        ArrayList<Object> objects = new ArrayList<>();
+    public ArrayList<Ball> detectAllBallsInRect(Shape rectangle) {
+        ArrayList<Ball> detectedBalls = new ArrayList<>();
 
         for (Ball ball : this.balls) {
             if (rectangle.intersects(ball.getX(), ball.getY(), ball.BALL_DIAMETER, ball.BALL_DIAMETER)) {
-                objects.add(ball);
+                balls.add(ball);
                 System.out.println("Found ball!");
             }
         }
 
-        for (com.gmail.jakekinsella.robot.Robot robot : this.redAlliance.getRobots()) {
+        return detectedBalls;
+    }
+
+    public ArrayList<Robot> detectAllRobotsInRect(Shape rectangle) {
+        ArrayList<Robot> detectedRobots = new ArrayList<>();
+
+        ArrayList<Robot> robots = new ArrayList<>(this.redAlliance.getRobots());
+        robots.addAll(this.blueAlliance.getRobots());
+
+        for (Robot robot : robots) {
             if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
-                objects.add(robot);
+                detectedRobots.add(robot);
                 System.out.println("Found red robot!");
             }
         }
 
+        return detectedRobots;
+    }
 
-        for (com.gmail.jakekinsella.robot.Robot robot : this.blueAlliance.getRobots()) {
-            if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
-                objects.add(robot);
-                System.out.println("Found blue robot!");
-            }
+    public ArrayList<Defense> detectAllDefensesInRect(Shape rectangle) {
+        ArrayList<Defense> detectedDefenses = new ArrayList<>();
+
+        ArrayList<Defense> defenses = new ArrayList<>(this.redAlliance.getDefenses());
+        defenses.addAll(this.blueAlliance.getDefenses());
+
+        for (Defense defense : defenses) {
+            // TODO: Implement detection of defenses
         }
 
-        return objects;
+        return detectedDefenses;
     }
 
     public void paintComponent(Graphics graphics) {

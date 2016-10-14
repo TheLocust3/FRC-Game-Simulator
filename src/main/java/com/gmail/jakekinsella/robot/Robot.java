@@ -147,7 +147,7 @@ public class Robot implements Paintable {
         return obj;
     }
 
-    public Object getObjectInFrontOf(RobotSide robotSide) {
+    public Object getBallsInFrontOf(RobotSide robotSide) {
         int rectWidth = this.width, rectHeight = this.REACHABLE_PIXELS, offset = 0;
         double rectAngle = 0;
 
@@ -177,7 +177,7 @@ public class Robot implements Paintable {
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
         rect = at.createTransformedShape(rect);
 
-        return RobotServer.getField().detectObjectInRectangle(rect);
+        return RobotServer.getField().detectAllBallsInRect(rect);
     }
 
     public void shutdownRobot() throws IOException {
