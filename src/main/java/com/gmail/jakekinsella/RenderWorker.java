@@ -23,7 +23,7 @@ public class RenderWorker extends SwingWorker {
     protected Object doInBackground() throws Exception {
         while (true) {
             this.field.repaint();
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         }
     }
 }

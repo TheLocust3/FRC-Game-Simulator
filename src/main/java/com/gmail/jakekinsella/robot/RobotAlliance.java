@@ -44,6 +44,10 @@ public class RobotAlliance implements Paintable {
         return this.score;
     }
 
+    public ArrayList<Robot> getRobots() {
+        return this.robots;
+    }
+
     public void addRobot(Robot robot) {
         this.robots.add(robot);
     }

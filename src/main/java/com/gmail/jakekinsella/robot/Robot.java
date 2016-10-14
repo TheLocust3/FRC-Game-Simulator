@@ -22,21 +22,25 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Created by jakekinsella on 9/12/16.
  */
 public class Robot implements Paintable {
 
-    private int x, y, width, height;
+    public final int REACHABLE_PIXELS = 20; // TODO: Should be settable in XML
+
+    private int width, height;
     private double angle;
     private String robotName;
     private int defensePosition;
-    private RobotSide pickupSide;
 
+    private Rectangle2D.Double rectangle;
+    private RobotSide pickupSide;
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
@@ -49,6 +53,7 @@ public class Robot implements Paintable {
     public Robot(Socket robotSocket, JSONFileReader jsonFileReader) {
         this.robotSocket = robotSocket;
         this.jsonFileReader = jsonFileReader;
+        this.rectangle = new Rectangle2D.Double(0, 0, 0, 0);
 
         try {
             this.robotSocketReader = new BufferedReader(new InputStreamReader(this.robotSocket.getInputStream()));
@@ -64,19 +69,43 @@ public class Robot implements Paintable {
     }
 
     public int getX() {
-        return this.x;
+        return (int) this.rectangle.getX();
+    }
+
+    public int getCenterX() {
+        return (int) this.rectangle.getCenterX();
     }
 
     public void setX(int x) {
-        this.x = x;
+        this.rectangle.setRect(x, this.getY(), this.width, this.height);
     }
 
     public int getY() {
-        return this.y;
+        return (int) this.rectangle.getY();
+    }
+
+    public int getCenterY() {
+        return (int) this.rectangle.getCenterY();
     }
 
     public void setY(int y) {
-        this.y = y;
+        rectangle.setRect(this.getX(), y, this.width, this.height);
+    }
+
+    public double getAngle() {
+        return this.angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 
     public RobotAlliance getRobotAlliance() {
@@ -84,11 +113,15 @@ public class Robot implements Paintable {
     }
 
     public void setRobotAlliance(RobotAlliance robotAlliance) {
-        this.robotAlliance =robotAlliance;
+        this.robotAlliance = robotAlliance;
     }
 
     public String getRobotName() {
         return this.robotName;
+    }
+
+    public Shape getRectangle() {
+        return this.rectangle;
     }
 
     public boolean isReadAvailable() {
@@ -107,33 +140,44 @@ public class Robot implements Paintable {
         obj.put("alliance-color", this.color.toString());
         obj.put("width", this.width);
         obj.put("height", this.height);
-        obj.put("x", this.x);
-        obj.put("y", this.y);
+        obj.put("x", this.getCenterX());
+        obj.put("y", this.getCenterY());
         obj.put("action", this.currentAction.toString()); // TODO: add actions to robot and send them
 
         return obj;
     }
 
     public Object getObjectInFrontOf(RobotSide robotSide) {
-        int detectLength = 20;
-        double boxAngle = 0;
+        int rectWidth = this.width, rectHeight = this.REACHABLE_PIXELS, offset = 0;
+        double rectAngle = 0;
 
         switch (robotSide) {
             case FRONT:
-                boxAngle = this.angle;
+                rectAngle = this.getAngle();
                 break;
             case BACK:
-                boxAngle = this.angle + 180;
+                rectAngle = this.getAngle() - 180;
                 break;
             case LEFT:
-                boxAngle = this.angle + 270;
+                rectWidth = this.height;
+                rectAngle = this.getAngle() - 90;
+                offset = -Math.abs(this.height - this.width) + 5; // This 5 is a tuned value. Idk why it is needed
                 break;
             case RIGHT:
-                boxAngle = this.angle + 90;
+                rectWidth = this.height;
+                rectAngle = this.getAngle() - 270;
+                offset = -Math.abs(this.height - this.width) + 5;
                 break;
         }
 
-        return RobotServer.getField().detectObjectInBox(this.getX(), this.getY(), detectLength, this.angle);
+        int rectX = this.getCenterX() - (rectWidth / 2);
+        int rectY = this.getCenterY() + (this.height / 2) + offset;
+
+        Shape rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
+        rect = at.createTransformedShape(rect);
+
+        return RobotServer.getField().detectObjectInRectangle(rect);
     }
 
     public void shutdownRobot() throws IOException {
@@ -244,11 +288,15 @@ public class Robot implements Paintable {
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
         if (this.color.equals(RobotAllianceColor.BLUE)) {
-            graphics.setColor(Color.BLUE);
+            graphics2D.setColor(Color.BLUE);
         } else {
-            graphics.setColor(Color.RED);
+            graphics2D.setColor(Color.RED);
         }
-        graphics.fillRect(this.x + (this.width / 2), this.y + (this.height / 2), this.width, this.height);
+
+
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(this.getAngle()), this.getCenterX(), this.getCenterY());
+        Shape shape = at.createTransformedShape(this.rectangle);
+        graphics2D.fill(shape);
     }
 
     private void setup() {
@@ -277,26 +325,31 @@ public class Robot implements Paintable {
         this.defensePosition = ((Long) jsonRobot.get("startDefense")).intValue();
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
+        this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
 
 
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {
             startColor = RobotAllianceColor.RED;
-            angle = 90;
         } else {
             startColor = RobotAllianceColor.BLUE;
-            angle = -90;
         }
 
         int[] position = Defense.getPosition(startColor, this.defensePosition);
-        this.x = Main.FRAME_WIDTH / 2;
+        this.setX(Main.FRAME_WIDTH / 2);
 
         if (this.color == RobotAllianceColor.BLUE) {
-            this.x -= 10;
+            this.setX(this.getX() + 20);
         } else {
-            this.x -= (this.width * 2) - 10;
+            this.setX(this.getX() - ((this.width * 2) - 20));
         }
 
-        this.y = position[1] - (this.height / 2);
+        this.setY(position[1]);
+
+        if (this.color == RobotAllianceColor.BLUE) {
+            this.setAngle(-90);
+        } else {
+            this.setAngle(angle = 90);
+        }
     }
 }

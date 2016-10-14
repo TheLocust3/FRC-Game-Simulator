@@ -1,15 +1,12 @@
 package com.gmail.jakekinsella.field;
 
-import com.gmail.jakekinsella.field.defense.*;
-import com.gmail.jakekinsella.robot.RobotAlliance;
-import com.gmail.jakekinsella.robot.RobotAllianceColor;
+import com.gmail.jakekinsella.robot.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -51,8 +48,30 @@ public class Field extends JPanel {
         return backgroundImageHeight;
     }
 
-    public ArrayList<Object> detectObjectInBox(int centerX, int centerY, int boxLength, double boxAngle) {
+    public ArrayList<Object> detectObjectInRectangle(Shape rectangle) {
         ArrayList<Object> objects = new ArrayList<>();
+
+        for (Ball ball : this.balls) {
+            if (rectangle.intersects(ball.getX(), ball.getY(), ball.BALL_DIAMETER, ball.BALL_DIAMETER)) {
+                objects.add(ball);
+                System.out.println("Found ball!");
+            }
+        }
+
+        for (com.gmail.jakekinsella.robot.Robot robot : this.redAlliance.getRobots()) {
+            if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
+                objects.add(robot);
+                System.out.println("Found red robot!");
+            }
+        }
+
+
+        for (com.gmail.jakekinsella.robot.Robot robot : this.blueAlliance.getRobots()) {
+            if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
+                objects.add(robot);
+                System.out.println("Found blue robot!");
+            }
+        }
 
         return objects;
     }
@@ -62,11 +81,11 @@ public class Field extends JPanel {
 
         graphics.drawImage(this.backgroundImage, 0, 0, backgroundImageWidth, backgroundImageHeight, this);
 
-        blueAlliance.paint(graphics, graphics2D);
-        redAlliance.paint(graphics, graphics2D);
+        blueAlliance.paint(graphics, (Graphics2D) graphics2D.create());
+        redAlliance.paint(graphics, (Graphics2D) graphics2D.create());
 
         for (Ball ball : this.balls) {
-            ball.paint(graphics, graphics2D);
+            ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
     }
 
