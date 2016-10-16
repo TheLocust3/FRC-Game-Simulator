@@ -3,6 +3,7 @@ package com.gmail.jakekinsella.robot;
 import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
+import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robotactions.Action;
 import com.gmail.jakekinsella.robotactions.NoneAction;
@@ -26,6 +27,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Created by jakekinsella on 9/12/16.
@@ -147,7 +149,7 @@ public class Robot implements Paintable {
         return obj;
     }
 
-    public Object getBallsInFrontOf(RobotSide robotSide) {
+    public ArrayList<Ball> getBallsInFrontOf(RobotSide robotSide) {
         int rectWidth = this.width, rectHeight = this.REACHABLE_PIXELS, offset = 0;
         double rectAngle = 0;
 
@@ -204,8 +206,8 @@ public class Robot implements Paintable {
 
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
-                this.currentAction = new ShootAction(commandInfo, this);
                 logger.info(this.getRobotName() + " has started to shoot a ball");
+                this.currentAction = new ShootAction(commandInfo, this);
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -214,8 +216,8 @@ public class Robot implements Paintable {
                 logger.error("MOVE action not implemented!");
                 break;
             case PICKUP:
-                this.currentAction = new PickupAction(commandInfo, this, this.pickupSide);
                 logger.info(this.getRobotName() + " has started to pickup a ball");
+                this.currentAction = new PickupAction(commandInfo, this, this.pickupSide);
                 break;
         }
     }
