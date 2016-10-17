@@ -12,11 +12,9 @@ import java.util.ArrayList;
 /**
  * Created by jakekinsella on 10/11/16.
  */
-public class PickupAction extends Action {
+public class PickupAction extends TimeAction {
 
-    private long remainingTime;
     private double successChance;
-    private long lastTick;
 
     private RobotSide pickupSide;
     private Ball ball;
@@ -27,9 +25,7 @@ public class PickupAction extends Action {
         super(command, robot);
 
         this.pickupSide = pickupSide;
-        this.remainingTime = (long) command.getArg(0);
         this.successChance = (double) command.getArg(1);
-        this.lastTick = System.currentTimeMillis();
     }
 
     public Ball getBall() {
@@ -37,39 +33,36 @@ public class PickupAction extends Action {
     }
 
     @Override
-    public void tick() {
-        if (this.robot.getBall() != null) { // Robot already has a ball
+    public void actionDone() {
+        boolean score = (Math.random() >= (1 - this.successChance));
+
+        if (score) {
+            logger.info(this.robot.getRobotName() + " has picked up a ball");
+        } else {
+            logger.info(this.robot.getRobotName() + " has failed to pick up a ball");
+        }
+
+        this.success = score;
+
+        ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
+        if (balls.size() == 0 || balls.size() > 1) {
+            logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
             success = false;
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+        } else {
+            ball = balls.get(0);
         }
 
-        long delta = System.currentTimeMillis() - this.lastTick;
-        this.remainingTime -= delta;
-
-        if (remainingTime <= 0) { // Must be finished
-            boolean score = (Math.random() >= (1 - this.successChance));
-
-            if (score) {
-                logger.info(this.robot.getRobotName() + " has picked up a ball");
-            } else {
-                logger.info(this.robot.getRobotName() + " has failed to pick up a ball");
-            }
-
-            this.success = score;
-
-            ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
-            if (balls.size() == 0 || balls.size() > 1) {
-                logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
-                success = false;
-            } else {
-                ball = balls.get(0);
-            }
-
-            this.robot.sendActionResponse();
-            this.robot.actionFinish();
-        }
-
-        this.lastTick = System.currentTimeMillis();
+        this.robot.sendActionResponse();
+        this.robot.actionFinish();
     }
+    @Override
+    public void actionStart() {
+        if (this.robot.getBall() != null) {
+            success = false;
+            logger.info(this.robot.getRobotName() + " already has a ball!");
+            this.robot.actionFinish();
+            this.robot.sendActionResponse();
+        }
+    }
+
 }

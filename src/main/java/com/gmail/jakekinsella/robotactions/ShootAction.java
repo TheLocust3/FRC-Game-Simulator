@@ -8,51 +8,42 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by jakekinsella on 10/5/16.
  */
-public class ShootAction extends Action {
+public class ShootAction extends TimeAction {
 
-    private long remainingTime;
     private double successChance;
-    private long lastTick;
 
     private static final Logger logger = LogManager.getLogger();
 
     public ShootAction(Command command, Robot robot) {
         super(command, robot);
 
-        this.remainingTime = (long) command.getArg(0);
         this.successChance = (double) command.getArg(1);
-        this.lastTick = System.currentTimeMillis();
-
-        tick();
     }
 
     @Override
-    public void tick() {
-        if (this.robot.getBall() == null) { // Robot doesn't have a ball
+    public void actionDone() {
+        boolean score = (Math.random() >= (1 - this.successChance));
+
+        if (score) {
+            logger.info(this.robot.getRobotName() + " has shot a ball and scored in the highgoal");
+        } else {
+            logger.info(this.robot.getRobotName() + " has shot a ball and missed the highgoal");
+        }
+
+        this.success = score;
+
+        this.robot.getRobotAlliance().getScore().scoreHighgoal(); // This flipping line...
+        this.robot.sendActionResponse();
+        this.robot.actionFinish();
+    }
+
+    @Override
+    public void actionStart() {
+        if (this.robot.getBall() == null) {
             success = false;
+            logger.info(this.robot.getRobotName() + " doesn't have a ball!");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
         }
-
-        long delta = System.currentTimeMillis() - this.lastTick;
-        this.remainingTime -= delta;
-
-        if (remainingTime <= 0) { // Must be finished
-            boolean score = (Math.random() >= (1 - this.successChance));
-
-            if (score) {
-                logger.info(this.robot.getRobotName() + " has shot a ball and scored in the highgoal");
-            } else {
-                logger.info(this.robot.getRobotName() + " has shot a ball and missed the highgoal");
-            }
-
-            this.success = score;
-
-            this.robot.getRobotAlliance().getScore().scoreHighgoal(); // This flipping line...
-            this.robot.sendActionResponse();
-            this.robot.actionFinish();
-        }
-        
-        this.lastTick = System.currentTimeMillis();
     }
 }
