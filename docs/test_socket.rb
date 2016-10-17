@@ -30,8 +30,12 @@ i = 0
 while true
     puts JSON.parse s.gets.chomp
 
-    if i == 10
+    if i == 20
         s.puts "{\"command\": \"SHOOT\",\"args\": [5000,0.8]}"
+    end
+
+    if i == 10
+        s.puts "{\"command\": \"LOWGOAL\",\"args\": [5000,0.8]}"
     end
 
     if i == 0

@@ -10,5 +10,6 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Write a better README and push to Github
  - Use jbox2d to add movement to balls and the robot  
  - Pull success chances of action from XML
- - Make Shoot and Pickup actions DRY
+ - Make Shoot, Pickup, and Lowgoal actions DRY
  - Implement low goals
+ - Check if robot is in range for highgoal and lowgoal

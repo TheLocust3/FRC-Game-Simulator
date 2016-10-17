@@ -1,44 +1,37 @@
 package com.gmail.jakekinsella.robotactions;
 
-import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.robot.Robot;
 import com.gmail.jakekinsella.robot.RobotSide;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-
 /**
- * Created by jakekinsella on 10/11/16.
+ * Created by jakekinsella on 10/17/16.
  */
-public class PickupAction extends Action {
+public class LowgoalAction extends Action {
 
+    private RobotSide pickupSide;
     private long remainingTime;
     private double successChance;
     private long lastTick;
 
-    private RobotSide pickupSide;
-    private Ball ball;
-
     private static final Logger logger = LogManager.getLogger();
 
-    public PickupAction(Command command, Robot robot, RobotSide pickupSide) {
+    public LowgoalAction(Command command, Robot robot, RobotSide pickupSide) {
         super(command, robot);
 
-        this.pickupSide = pickupSide;
+        this.pickupSide = pickupSide; // Assumes the robot shoots lowgoals on the same side as pickup
         this.remainingTime = (long) command.getArg(0);
         this.successChance = (double) command.getArg(1);
         this.lastTick = System.currentTimeMillis();
-    }
 
-    public Ball getBall() {
-        return this.ball;
+        tick();
     }
 
     @Override
     public void tick() {
-        if (this.robot.getBall() != null) { // Robot already has a ball
+        if (this.robot.getBall() == null) { // Robot doesn't have a ball
             success = false;
             this.robot.actionFinish();
             this.robot.sendActionResponse();
@@ -51,21 +44,14 @@ public class PickupAction extends Action {
             boolean score = (Math.random() >= (1 - this.successChance));
 
             if (score) {
-                logger.info(this.robot.getRobotName() + " has picked up a ball");
+                logger.info(this.robot.getRobotName() + " has shot a ball and scored in the lowgoal");
             } else {
-                logger.info(this.robot.getRobotName() + " has failed to pick up a ball");
+                logger.info(this.robot.getRobotName() + " has shot a ball and missed the lowgoal");
             }
 
             this.success = score;
 
-            ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
-            if (balls.size() == 0 || balls.size() > 1) {
-                logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
-                success = false;
-            } else {
-                ball = balls.get(0);
-            }
-
+            this.robot.getRobotAlliance().getScore().scoreLowgoal(); // This flipping line...
             this.robot.sendActionResponse();
             this.robot.actionFinish();
         }

@@ -28,6 +28,12 @@ public class ShootAction extends Action {
 
     @Override
     public void tick() {
+        if (this.robot.getBall() == null) { // Robot doesn't have a ball
+            success = false;
+            this.robot.actionFinish();
+            this.robot.sendActionResponse();
+        }
+
         long delta = System.currentTimeMillis() - this.lastTick;
         this.remainingTime -= delta;
 

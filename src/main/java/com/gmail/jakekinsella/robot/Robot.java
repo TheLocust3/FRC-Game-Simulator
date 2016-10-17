@@ -5,10 +5,7 @@ import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.defense.Defense;
-import com.gmail.jakekinsella.robotactions.Action;
-import com.gmail.jakekinsella.robotactions.NoneAction;
-import com.gmail.jakekinsella.robotactions.PickupAction;
-import com.gmail.jakekinsella.robotactions.ShootAction;
+import com.gmail.jakekinsella.robotactions.*;
 import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
 import com.gmail.jakekinsella.socketcommands.booleancommands.StartAutoCommand;
@@ -114,6 +111,10 @@ public class Robot implements Paintable {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public Ball getBall() {
+        return this.ball;
     }
 
     public RobotAlliance getRobotAlliance() {
@@ -225,6 +226,10 @@ public class Robot implements Paintable {
                 logger.info(this.getRobotName() + " has started to pickup a ball");
                 this.currentAction = new PickupAction(commandInfo, this, this.pickupSide);
                 break;
+            case LOWGOAL:
+                logger.info(this.getRobotName() + " has started to shoot a lowgoal");
+                this.currentAction = new LowgoalAction(commandInfo, this, this.pickupSide);
+                break;
         }
     }
 
@@ -253,6 +258,16 @@ public class Robot implements Paintable {
                 this.ball.setX(this.getCenterX());
                 this.ball.setY(this.getCenterY());
             }
+        }
+
+        if (this.currentAction.toString().equals("SHOOT")) {
+            // TODO: Drop ball near the tower
+            this.ball = null;
+        }
+
+        if (this.currentAction.toString().equals("LOWGOAL")) {
+            // TODO: Drop ball near the tower
+            this.ball = null;
         }
 
         this.currentAction = new NoneAction();
