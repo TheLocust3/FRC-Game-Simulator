@@ -30,25 +30,14 @@ public class PickupAction extends Action {
         this.remainingTime = (long) command.getArg(0);
         this.successChance = (double) command.getArg(1);
         this.lastTick = System.currentTimeMillis();
+    }
 
-        ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
-        System.out.println(balls.size());
-        if (balls.size() == 0 || balls.size() > 1) {
-            logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
-            success = false;
-        } else {
-            ball = balls.get(0);
-            this.tick();
-        }
+    public Ball getBall() {
+        return this.ball;
     }
 
     @Override
     public void tick() {
-        if (ball == null) {
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
-        }
-
         long delta = System.currentTimeMillis() - this.lastTick;
         this.remainingTime -= delta;
 
@@ -62,6 +51,14 @@ public class PickupAction extends Action {
             }
 
             this.success = score;
+
+            ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
+            if (balls.size() == 0 || balls.size() > 1) {
+                logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
+                success = false;
+            } else {
+                ball = balls.get(0);
+            }
 
             this.robot.sendActionResponse();
             this.robot.actionFinish();

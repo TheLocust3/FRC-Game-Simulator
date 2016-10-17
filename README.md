@@ -11,5 +11,4 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Use jbox2d to add movement to balls and the robot  
  - Pull success chances of action from XML
  - Make Shoot and Pickup actions DRY
- - Use some trig to calculate a box in the front of the robot
-   - Then check for objects in that box
+ - Implement low goals

@@ -49,6 +49,7 @@ public class Robot implements Paintable {
     private RobotAlliance robotAlliance;
     private JSONFileReader jsonFileReader;
     private Action currentAction = new NoneAction();
+    private Ball ball;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -80,6 +81,11 @@ public class Robot implements Paintable {
 
     public void setX(int x) {
         this.rectangle.setRect(x, this.getY(), this.width, this.height);
+
+        if (this.ball != null) {
+            this.ball.setX(this.getCenterX());
+            this.ball.setY(this.getCenterY());
+        }
     }
 
     public int getY() {
@@ -240,6 +246,15 @@ public class Robot implements Paintable {
     }
 
     public void actionFinish() {
+        if (this.currentAction.getSuccess()) {
+            if (this.currentAction.toString().equals("PICKUP")) {
+                this.ball = ((PickupAction) this.currentAction).getBall();
+
+                this.ball.setX(this.getCenterX());
+                this.ball.setY(this.getCenterY());
+            }
+        }
+
         this.currentAction = new NoneAction();
     }
 
@@ -294,7 +309,6 @@ public class Robot implements Paintable {
         } else {
             graphics2D.setColor(Color.RED);
         }
-
 
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(this.getAngle()), this.getCenterX(), this.getCenterY());
         Shape shape = at.createTransformedShape(this.rectangle);
@@ -353,5 +367,8 @@ public class Robot implements Paintable {
         } else {
             this.setAngle(angle = 90);
         }
+
+        this.setX(this.getX() + 80);
+        this.setY(this.getY() - 20);
     }
 }

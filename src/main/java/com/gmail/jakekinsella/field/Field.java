@@ -55,7 +55,7 @@ public class Field extends JPanel {
 
         for (Ball ball : this.balls) {
             if (rectangle.intersects(ball.getX(), ball.getY(), ball.BALL_DIAMETER, ball.BALL_DIAMETER)) {
-                balls.add(ball);
+                detectedBalls.add(ball);
                 System.out.println("Found ball!");
             }
         }
@@ -72,7 +72,7 @@ public class Field extends JPanel {
         for (Robot robot : robots) {
             if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
                 detectedRobots.add(robot);
-                System.out.println("Found red robot!");
+                System.out.println("Found robot!");
             }
         }
 
