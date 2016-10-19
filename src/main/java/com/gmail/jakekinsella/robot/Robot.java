@@ -31,16 +31,17 @@ import java.util.ArrayList;
  */
 public class Robot implements Paintable {
 
-    public final int REACHABLE_PIXELS = 20; // TODO: Should be settable in XML
-    public final int SHOOT_RANGE = 100;
-
     private int width, height;
     private double angle;
     private String robotName;
     private int defensePosition;
+    private int pickupRange, highgoalRange, lowgoalRange;
+    private double pickupChance, highgoalChance, lowgoalChance;
 
     private Rectangle2D.Double rectangle;
     private RobotSide pickupSide;
+    private RobotSide highgoalSide;
+    private RobotSide lowgoalSide;
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
@@ -158,7 +159,7 @@ public class Robot implements Paintable {
     }
 
     public ArrayList<Ball> getBallsInFrontOf(RobotSide robotSide) {
-        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.REACHABLE_PIXELS));
+        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.pickupRange));
     }
 
     public Shape createDetectionRect(RobotSide robotSide, int range) {
@@ -217,7 +218,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this, this.pickupSide, this.SHOOT_RANGE);
+                this.currentAction = new ShootAction(commandInfo, this, this.highgoalSide, this.highgoalRange);
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -231,7 +232,7 @@ public class Robot implements Paintable {
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.pickupSide, this.REACHABLE_PIXELS);
+                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalSide, this.lowgoalRange);
                 break;
         }
     }
@@ -349,12 +350,22 @@ public class Robot implements Paintable {
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
 
         this.color = RobotAllianceColor.valueOf((String) jsonRobot.get("allianceColor"));
-        this.pickupSide = RobotSide.valueOf((String) jsonRobot.get("pickupSide"));
         this.defensePosition = ((Long) jsonRobot.get("startDefense")).intValue();
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
         this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
 
+        this.pickupSide = RobotSide.valueOf((String) jsonRobot.get("pickupSide"));
+        this.highgoalSide = RobotSide.valueOf((String) jsonRobot.get("highgoalSide"));
+        this.lowgoalSide = RobotSide.valueOf((String) jsonRobot.get("lowgoalSide"));
+
+        this.pickupRange = ((Long) jsonRobot.get("pickupRange")).intValue();
+        this.highgoalRange = ((Long) jsonRobot.get("highgoalRange")).intValue();
+        this.lowgoalRange = ((Long) jsonRobot.get("lowgoalRange")).intValue();
+
+        this.pickupChance = (Double) jsonRobot.get("pickupChance");
+        this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
+        this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
 
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {
