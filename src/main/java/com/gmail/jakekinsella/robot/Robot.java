@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class Robot implements Paintable {
 
     public final int REACHABLE_PIXELS = 20; // TODO: Should be settable in XML
+    public final int SHOOT_RANGE = 100;
 
     private int width, height;
     private double angle;
@@ -157,7 +158,11 @@ public class Robot implements Paintable {
     }
 
     public ArrayList<Ball> getBallsInFrontOf(RobotSide robotSide) {
-        int rectWidth = this.width, rectHeight = this.REACHABLE_PIXELS, offset = 0;
+        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.REACHABLE_PIXELS));
+    }
+
+    public Shape createDetectionRect(RobotSide robotSide, int range) {
+        int rectWidth = this.width, rectHeight = range, offset = 0;
         double rectAngle = 0;
 
         switch (robotSide) {
@@ -184,9 +189,7 @@ public class Robot implements Paintable {
 
         Shape rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
-        rect = at.createTransformedShape(rect);
-
-        return RobotServer.getField().detectAllBallsInRect(rect);
+        return at.createTransformedShape(rect);
     }
 
     public void shutdownRobot() throws IOException {
@@ -214,7 +217,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this);
+                this.currentAction = new ShootAction(commandInfo, this, this.pickupSide, this.SHOOT_RANGE);
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -228,7 +231,7 @@ public class Robot implements Paintable {
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.pickupSide);
+                this.currentAction = new LowgoalAction(commandInfo, this, this.pickupSide, this.REACHABLE_PIXELS);
                 break;
         }
     }
@@ -257,17 +260,11 @@ public class Robot implements Paintable {
 
                 this.ball.setX(this.getCenterX());
                 this.ball.setY(this.getCenterY());
+            } else if (this.currentAction.toString().equals("SHOOT")) {
+                // TODO: Drop ball near the tower
+            } else if (this.currentAction.toString().equals("LOWGOAL")) {
+                // TODO: Drop ball near the tower
             }
-        }
-
-        if (this.currentAction.toString().equals("SHOOT")) {
-            // TODO: Drop ball near the tower
-            this.ball = null;
-        }
-
-        if (this.currentAction.toString().equals("LOWGOAL")) {
-            // TODO: Drop ball near the tower
-            this.ball = null;
         }
 
         this.currentAction = new NoneAction();
@@ -382,8 +379,5 @@ public class Robot implements Paintable {
         } else {
             this.setAngle(angle = 90);
         }
-
-        this.setX(this.getX() + 80);
-        this.setY(this.getY() - 20);
     }
 }

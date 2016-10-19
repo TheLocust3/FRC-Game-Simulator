@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -17,7 +19,14 @@ import java.util.ArrayList;
  */
 public class Field extends JPanel {
 
-    public final int BALL_NUMBER = 6;
+    public static final int BALL_NUMBER = 6;
+    public static final Rectangle2D.Double bottomBlueTowerGoal = new Rectangle2D.Double(-1, 197, 32, 2);
+    public static final Rectangle2D.Double topBlueTowerGoal = new Rectangle2D.Double(-1, 145, 32, 2);
+    public static final Rectangle2D.Double middleBlueTowerGoal = new Rectangle2D.Double(27, 157, 2, 32);
+
+    public static final Rectangle2D.Double bottomRedTowerGoal = new Rectangle2D.Double(730, 221, 32, 2);
+    public static final Rectangle2D.Double topRedTowerGoal = new Rectangle2D.Double(730, 171, 32, 2);
+    public static final Rectangle2D.Double middleRedTowerGoal = new Rectangle2D.Double(732, 181, 2, 32);
 
     private Image backgroundImage;
     private static int backgroundImageWidth, backgroundImageHeight;
@@ -92,6 +101,58 @@ public class Field extends JPanel {
         return detectedDefenses;
     }
 
+    public ArrayList<Rectangle2D.Double> checkIfHighGoalInRange(Shape rectangle) {
+        ArrayList<Rectangle2D.Double> goals = new ArrayList<>();
+
+        if (rectangle.intersects(bottomBlueTowerGoal)) {
+            goals.add(bottomBlueTowerGoal);
+        }
+
+        if (rectangle.intersects(bottomRedTowerGoal)) {
+            goals.add(bottomRedTowerGoal);
+        }
+
+        if (rectangle.intersects(middleBlueTowerGoal)) {
+            goals.add(middleBlueTowerGoal);
+        }
+
+        if (rectangle.intersects(middleRedTowerGoal)) {
+            goals.add(middleRedTowerGoal);
+        }
+
+        if (rectangle.intersects(topBlueTowerGoal)) {
+            goals.add(topBlueTowerGoal);
+        }
+
+        if (rectangle.intersects(topRedTowerGoal)) {
+            goals.add(topRedTowerGoal);
+        }
+
+        return goals;
+    }
+
+    public ArrayList<Rectangle2D.Double> checkIfLowGoalInRange(Shape rectangle) {
+        ArrayList<Rectangle2D.Double> goals = new ArrayList<>();
+
+        if (rectangle.intersects(bottomBlueTowerGoal)) {
+            goals.add(bottomBlueTowerGoal);
+        }
+
+        if (rectangle.intersects(bottomRedTowerGoal)) {
+            goals.add(bottomRedTowerGoal);
+        }
+
+        if (rectangle.intersects(topBlueTowerGoal)) {
+            goals.add(topBlueTowerGoal);
+        }
+
+        if (rectangle.intersects(topRedTowerGoal)) {
+            goals.add(topRedTowerGoal);
+        }
+
+        return goals;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
@@ -103,6 +164,22 @@ public class Field extends JPanel {
         for (Ball ball : this.balls) {
             ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
+
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(-30), bottomBlueTowerGoal.getCenterX(), bottomBlueTowerGoal.getCenterY());
+        graphics2D.fill(at.createTransformedShape(bottomBlueTowerGoal));
+
+        at = AffineTransform.getRotateInstance(Math.toRadians(30), topBlueTowerGoal.getCenterX(), topBlueTowerGoal.getCenterY());
+        graphics2D.fill(at.createTransformedShape(topBlueTowerGoal));
+
+        graphics2D.fill(middleBlueTowerGoal);
+
+        at = AffineTransform.getRotateInstance(Math.toRadians(30), bottomRedTowerGoal.getCenterX(), bottomRedTowerGoal.getCenterY());
+        graphics2D.fill(at.createTransformedShape(bottomRedTowerGoal));
+
+        at = AffineTransform.getRotateInstance(Math.toRadians(-30), topRedTowerGoal.getCenterX(), topRedTowerGoal.getCenterY());
+        graphics2D.fill(at.createTransformedShape(topRedTowerGoal));
+
+        graphics2D.fill(middleRedTowerGoal);
     }
 
     private void setupField() {

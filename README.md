@@ -11,4 +11,9 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Use jbox2d to add movement to balls and the robot  
  - Pull success chances of action from XML
  - Check if robot is in range for highgoal and lowgoal
+   - Create range away from goal methods
+ - Use a formula for the success chance of shooting a highgoal
+ - Randomize the position of the ball after a missed highgoal shot
+   - I don't want to deal with the physics part so just make sure the robot can't learn from the ball's end position
+ - Create goal classes
  - Implement turn and move actions

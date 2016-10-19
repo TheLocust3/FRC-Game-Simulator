@@ -1,6 +1,7 @@
 package com.gmail.jakekinsella.robotactions;
 
 import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.RobotServer;
 import com.gmail.jakekinsella.robot.RobotSide;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
@@ -13,13 +14,15 @@ public class LowgoalAction extends TimeAction {
 
     private RobotSide pickupSide;
     private double successChance;
+    private int range;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public LowgoalAction(Command command, Robot robot, RobotSide pickupSide) {
+    public LowgoalAction(Command command, Robot robot, RobotSide pickupSide, int range) {
         super(command, robot);
 
         this.pickupSide = pickupSide; // Assumes the robot shoots lowgoals on the same side as pickup
+        this.range = range;
         this.successChance = (double) command.getArg(1);
     }
 
@@ -45,6 +48,11 @@ public class LowgoalAction extends TimeAction {
         if (this.robot.getBall() == null) {
             success = false;
             logger.info(this.robot.getRobotName() + " doesn't have a ball!");
+            this.robot.actionFinish();
+            this.robot.sendActionResponse();
+        } else if (RobotServer.getField().checkIfLowGoalInRange(this.robot.createDetectionRect(this.pickupSide, this.range)).size() == 0) {
+            success = false;
+            logger.info(this.robot.getRobotName() + " isn't in range of the lowgoal");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
         }

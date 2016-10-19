@@ -1,6 +1,8 @@
 package com.gmail.jakekinsella.robotactions;
 
 import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.RobotServer;
+import com.gmail.jakekinsella.robot.RobotSide;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,14 +12,18 @@ import org.apache.logging.log4j.Logger;
  */
 public class ShootAction extends TimeAction {
 
+    private RobotSide shootSide;
     private double successChance;
+    private int range;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public ShootAction(Command command, Robot robot) {
+    public ShootAction(Command command, Robot robot, RobotSide shootSide, int range) {
         super(command, robot);
 
+        this.shootSide = shootSide;
         this.successChance = (double) command.getArg(1);
+        this.range = range;
     }
 
     @Override
@@ -42,6 +48,11 @@ public class ShootAction extends TimeAction {
         if (this.robot.getBall() == null) {
             success = false;
             logger.info(this.robot.getRobotName() + " doesn't have a ball!");
+            this.robot.actionFinish();
+            this.robot.sendActionResponse();
+        } else if (RobotServer.getField().checkIfHighGoalInRange(this.robot.createDetectionRect(this.shootSide, this.range)).size() == 0) {
+            success = false;
+            logger.info(this.robot.getRobotName() + " isn't in range of the highgoal");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
         }
