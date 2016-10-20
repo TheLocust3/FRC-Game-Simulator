@@ -11,10 +11,10 @@ public class TimeAction extends Action {
     private long remainingTime;
     private long lastTick;
 
-    public TimeAction(Command command, Robot robot) {
+    public TimeAction(Command command, Robot robot, int time) {
         super(command, robot);
 
-        this.remainingTime = (long) command.getArg(0);
+        this.remainingTime = time;
         this.lastTick = System.currentTimeMillis();
     }
 

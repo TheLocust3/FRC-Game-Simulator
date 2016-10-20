@@ -31,18 +31,18 @@ while true
     puts JSON.parse s.gets.chomp
 
     if i == 20
-        s.puts "{\"command\": \"SHOOT\",\"args\": [5000,0.8]}"
+        s.puts "{\"command\": \"SHOOT\",\"args\": []}"
     end
 
     if i == 10
-        s.puts "{\"command\": \"LOWGOAL\",\"args\": [5000,0.8]}"
+        s.puts "{\"command\": \"LOWGOAL\",\"args\": []}"
     end
 
     if i == 0
-        s.puts "{\"command\": \"PICKUP\",\"args\": [5000,0.8]}"
+        s.puts "{\"command\": \"PICKUP\",\"args\": []}"
     end
 
     i += 1
 end
 
-s.close             # close socket when done
+s.close

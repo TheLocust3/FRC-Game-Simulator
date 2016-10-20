@@ -18,11 +18,11 @@ public class ShootAction extends TimeAction {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public ShootAction(Command command, Robot robot, RobotSide shootSide, int range) {
-        super(command, robot);
+    public ShootAction(Command command, Robot robot, int time, double successChance, RobotSide shootSide, int range) {
+        super(command, robot, time);
 
         this.shootSide = shootSide;
-        this.successChance = (double) command.getArg(1);
+        this.successChance = successChance;
         this.range = range;
     }
 

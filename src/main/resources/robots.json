@@ -12,6 +12,9 @@
     "lowgoalRange": 20,
     "pickupChance": 0.7,
     "highgoalChance": 0.5,
-    "lowgoalChance": 0.8
+    "lowgoalChance": 0.8,
+    "pickupTime": 5000,
+    "highgoalTime": 5000,
+    "lowgoalTime": 5000,
   }
 }

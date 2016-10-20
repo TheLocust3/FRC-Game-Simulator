@@ -21,11 +21,11 @@ public class PickupAction extends TimeAction {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public PickupAction(Command command, Robot robot, RobotSide pickupSide) {
-        super(command, robot);
+    public PickupAction(Command command, Robot robot, int time, double successChance, RobotSide pickupSide) {
+        super(command, robot, time);
 
         this.pickupSide = pickupSide;
-        this.successChance = (double) command.getArg(1);
+        this.successChance = successChance;
     }
 
     public Ball getBall() {

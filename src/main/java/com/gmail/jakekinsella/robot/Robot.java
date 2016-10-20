@@ -37,6 +37,7 @@ public class Robot implements Paintable {
     private int defensePosition;
     private int pickupRange, highgoalRange, lowgoalRange;
     private double pickupChance, highgoalChance, lowgoalChance;
+    private int pickupTime, highgoalTime, lowgoalTime;
 
     private Rectangle2D.Double rectangle;
     private RobotSide pickupSide;
@@ -218,7 +219,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this, this.highgoalSide, this.highgoalRange);
+                this.currentAction = new ShootAction(commandInfo, this, this.highgoalTime, this.highgoalChance, this.highgoalSide, this.highgoalRange);
                 break;
             case TURN:
                 logger.error("TURN action not implemented!");
@@ -228,11 +229,11 @@ public class Robot implements Paintable {
                 break;
             case PICKUP:
                 logger.info(this.getRobotName() + " has started to pickup a ball");
-                this.currentAction = new PickupAction(commandInfo, this, this.pickupSide);
+                this.currentAction = new PickupAction(commandInfo, this, this.pickupTime, this.pickupChance, this.pickupSide);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalSide, this.lowgoalRange);
+                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance, this.lowgoalSide, this.lowgoalRange);
                 break;
         }
     }
@@ -366,6 +367,10 @@ public class Robot implements Paintable {
         this.pickupChance = (Double) jsonRobot.get("pickupChance");
         this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
         this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
+
+        this.pickupTime = ((Long) jsonRobot.get("pickupTime")).intValue();
+        this.highgoalTime = ((Long) jsonRobot.get("highgoalTime")).intValue();
+        this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
 
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {

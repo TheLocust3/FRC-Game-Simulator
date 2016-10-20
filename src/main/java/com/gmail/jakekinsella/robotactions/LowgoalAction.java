@@ -18,12 +18,12 @@ public class LowgoalAction extends TimeAction {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public LowgoalAction(Command command, Robot robot, RobotSide pickupSide, int range) {
-        super(command, robot);
+    public LowgoalAction(Command command, Robot robot, int time, double successChance, RobotSide pickupSide, int range) {
+        super(command, robot, time);
 
         this.pickupSide = pickupSide; // Assumes the robot shoots lowgoals on the same side as pickup
         this.range = range;
-        this.successChance = (double) command.getArg(1);
+        this.successChance = successChance;
     }
 
     @Override
