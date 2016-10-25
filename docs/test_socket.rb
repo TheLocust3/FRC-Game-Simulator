@@ -31,7 +31,7 @@ while true
     puts JSON.parse s.gets.chomp
 
     if i == 0
-        s.puts "{\"command\": \"TURN\",\"args\": [-180]}"
+        s.puts "{\"command\": \"MOVE\",\"args\": [0.5]}"
     end
 
     i += 1

@@ -33,11 +33,13 @@ public class Robot implements Paintable {
 
     private int width, height;
     private double angle;
+    private double velocity; // in pixels per second
     private String robotName;
     private int defensePosition;
     private int pickupRange, highgoalRange, lowgoalRange;
     private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond;
     private int pickupTime, highgoalTime, lowgoalTime;
+    private long lastTick;
 
     private Rectangle2D.Double rectangle;
     private RobotSide pickupSide;
@@ -98,6 +100,14 @@ public class Robot implements Paintable {
 
     public void setY(int y) {
         rectangle.setRect(this.getX(), y, this.width, this.height);
+    }
+
+    public double getVelocity() {
+        return this.velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
     }
 
     public double getAngle() {
@@ -198,10 +208,26 @@ public class Robot implements Paintable {
         this.robotSocket.close();
     }
 
+    public void movementTick(long delta) {
+        double deltaSeconds = delta / 1000.0;
+
+        double deltaX = (deltaSeconds * this.getVelocity()) * Math.cos(this.getAngle());
+        double deltaY = (deltaSeconds * this.getVelocity()) * Math.sin(this.getAngle());
+        System.out.println(deltaX);
+
+        this.setX((int) (this.getX() + deltaX));
+        this.setY((int) (this.getY() + deltaY));
+    }
+
     // Process all any new commands and give actions time to update
     public void tick() {
+        long delta = System.currentTimeMillis() - this.lastTick;
+
+        movementTick(delta);
         currentAction.tick();
         processRobotInput();
+
+        this.lastTick = System.currentTimeMillis();
     }
 
     public void processRobotInput() {
@@ -226,7 +252,8 @@ public class Robot implements Paintable {
                 this.currentAction = new TurnAction(commandInfo, this, this.degreePerMillisecond);
                 break;
             case MOVE:
-                logger.error("MOVE action not implemented!");
+                logger.info(this.getRobotName() + " has changed velocity");
+                this.currentAction = new MovementAction(commandInfo, this, 10);
                 break;
             case PICKUP:
                 logger.info(this.getRobotName() + " has started to pickup a ball");

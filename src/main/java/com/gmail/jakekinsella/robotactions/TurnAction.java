@@ -37,9 +37,11 @@ public class TurnAction extends Action {
 
         if ((this.finalAngle < this.startingAngle && newAngle < this.finalAngle) || (this.finalAngle > this.startingAngle && newAngle > this.finalAngle)) {
             this.robot.setAngle(this.finalAngle);
+            this.success = true;
 
             logger.info(this.robot.getRobotName() + " has stopped turning");
             this.robot.actionFinish();
+            this.robot.sendActionResponse();
         } else {
             this.robot.setAngle(this.robot.getAngle() + (this.degreePerMillisecond * delta));
         }
