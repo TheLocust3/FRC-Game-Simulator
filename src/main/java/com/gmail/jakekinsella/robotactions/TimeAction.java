@@ -25,6 +25,8 @@ public class TimeAction extends Action {
         long delta = System.currentTimeMillis() - this.lastTick;
         this.remainingTime -= delta;
 
+        actionTick();
+
         if (remainingTime <= 0) { // Must be finished
             actionDone();
         }
@@ -37,6 +39,10 @@ public class TimeAction extends Action {
     }
 
     public void actionStart() {
+
+    }
+
+    public void actionTick() {
 
     }
 }

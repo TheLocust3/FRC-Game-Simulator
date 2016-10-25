@@ -222,7 +222,8 @@ public class Robot implements Paintable {
                 this.currentAction = new ShootAction(commandInfo, this, this.highgoalTime, this.highgoalChance, this.highgoalSide, this.highgoalRange);
                 break;
             case TURN:
-                logger.error("TURN action not implemented!");
+                logger.info(this.getRobotName() + " has started to turn");
+                this.currentAction = new TurnAction(commandInfo, this, 0.01);
                 break;
             case MOVE:
                 logger.error("MOVE action not implemented!");
