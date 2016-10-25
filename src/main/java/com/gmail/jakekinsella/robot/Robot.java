@@ -36,7 +36,7 @@ public class Robot implements Paintable {
     private String robotName;
     private int defensePosition;
     private int pickupRange, highgoalRange, lowgoalRange;
-    private double pickupChance, highgoalChance, lowgoalChance;
+    private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond;
     private int pickupTime, highgoalTime, lowgoalTime;
 
     private Rectangle2D.Double rectangle;
@@ -223,7 +223,7 @@ public class Robot implements Paintable {
                 break;
             case TURN:
                 logger.info(this.getRobotName() + " has started to turn");
-                this.currentAction = new TurnAction(commandInfo, this, 0.01);
+                this.currentAction = new TurnAction(commandInfo, this, this.degreePerMillisecond);
                 break;
             case MOVE:
                 logger.error("MOVE action not implemented!");
@@ -372,6 +372,8 @@ public class Robot implements Paintable {
         this.pickupTime = ((Long) jsonRobot.get("pickupTime")).intValue();
         this.highgoalTime = ((Long) jsonRobot.get("highgoalTime")).intValue();
         this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
+
+        this.degreePerMillisecond = (Double) jsonRobot.get("degreePerMillisecond");
 
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {
