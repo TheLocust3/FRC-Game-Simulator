@@ -37,7 +37,7 @@ public class Robot implements Paintable {
     private String robotName;
     private int defensePosition;
     private int pickupRange, highgoalRange, lowgoalRange;
-    private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond;
+    private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
     private int pickupTime, highgoalTime, lowgoalTime;
     private long lastTick;
 
@@ -213,7 +213,6 @@ public class Robot implements Paintable {
 
         double deltaX = (deltaSeconds * this.getVelocity()) * Math.cos(this.getAngle());
         double deltaY = (deltaSeconds * this.getVelocity()) * Math.sin(this.getAngle());
-        System.out.println(deltaX);
 
         this.setX((int) (this.getX() + deltaX));
         this.setY((int) (this.getY() + deltaY));
@@ -253,7 +252,7 @@ public class Robot implements Paintable {
                 break;
             case MOVE:
                 logger.info(this.getRobotName() + " has changed velocity");
-                this.currentAction = new MovementAction(commandInfo, this, 10);
+                this.currentAction = new MovementAction(commandInfo, this, this.maxVelocity);
                 break;
             case PICKUP:
                 logger.info(this.getRobotName() + " has started to pickup a ball");
@@ -401,6 +400,7 @@ public class Robot implements Paintable {
         this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
 
         this.degreePerMillisecond = (Double) jsonRobot.get("degreePerMillisecond");
+        this.maxVelocity = (Double) jsonRobot.get("maxVelocity");
 
         RobotAllianceColor startColor; // Robots start in front of the opposite defenses
         if (this.color == RobotAllianceColor.BLUE) {
