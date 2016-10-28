@@ -12,6 +12,7 @@ import javax.swing.*;
 public class ControlWorker extends SwingWorker {
 
     private RobotServer robotServer;
+    private long lastTick;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -30,9 +31,13 @@ public class ControlWorker extends SwingWorker {
         robotServer.startAuto();
 
         while (true) {
-            robotServer.run();
+            int delta = (int) (System.currentTimeMillis() - this.lastTick);
+            RobotServer.getField().setFPS(1000 / delta);
 
-            Thread.sleep(50);
+            robotServer.run();
+            this.lastTick = System.currentTimeMillis();
+
+            Thread.sleep(30);
         }
     }
 }

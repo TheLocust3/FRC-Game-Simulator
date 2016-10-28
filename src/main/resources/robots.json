@@ -17,6 +17,6 @@
     "highgoalTime": 5000,
     "lowgoalTime": 5000,
     "degreePerMillisecond": 0.01,
-    "maxVelocity": 10.0
+    "maxVelocity": 100.0
   }
 }

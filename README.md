@@ -8,10 +8,9 @@ As you can see, many pieces that are often considered an integral part of FRC ha
   
 ### To-Do  
  - Write a better README and push to Github
- - Add physics for ball and movement  
+ - Add physics for ball  
  - Use a formula for the success chance of shooting a highgoal
  - Randomize the position of the ball after a missed highgoal shot
    - I don't want to deal with the physics part so just make sure the robot can't learn from the ball's end position
  - Consider goal classes
- - Implement move actions
  - Implement collision detection

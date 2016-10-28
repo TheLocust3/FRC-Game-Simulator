@@ -4,6 +4,7 @@ import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.robot.RobotAllianceColor;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Created by jakekinsella on 9/20/16.
@@ -14,6 +15,8 @@ public abstract class Defense implements Paintable {
     protected int defensePosition, x, y;
     protected RobotAllianceColor allianceColor;
 
+    private Rectangle2D.Double rectangle;
+
     public Defense(int defensePosition, RobotAllianceColor allianceColor) {
         this.defensePosition = defensePosition;
         this.allianceColor = allianceColor;
@@ -21,6 +24,8 @@ public abstract class Defense implements Paintable {
         int[] position = this.getPosition(allianceColor, defensePosition);
         this.x = position[0];
         this.y = position[1];
+
+        this.rectangle = new Rectangle2D.Double(this.x - 8, this.y - 6, 71, 62);
     }
 
     public String getDefenseName() {
@@ -31,8 +36,15 @@ public abstract class Defense implements Paintable {
         return this.defensePosition;
     }
 
+    public Rectangle2D.Double getRectangle() {
+        return this.rectangle;
+    }
+
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
+        graphics2D.setColor(Color.BLUE);
+        graphics2D.draw(this.getRectangle());
+
         graphics.setFont(new Font("Arial", Font.PLAIN, 6));
         graphics.setColor(Color.BLACK);
         graphics.drawString(this.defenseName, this.x, this.y);
@@ -50,15 +62,15 @@ public abstract class Defense implements Paintable {
         switch (defensePosition) {
             case 1:
                 if (allianceColor.equals(RobotAllianceColor.BLUE)) {
-                    position[1] = 320;
+                    position[1] = 318;
                 } else {
-                    position[1] = 7;
+                    position[1] = 5;
                 }
 
                 break;
             case 2:
                 if (allianceColor.equals(RobotAllianceColor.BLUE)) {
-                    position[1] = 256;
+                    position[1] = 255;
                 } else {
                     position[1] = 64;
                 }
@@ -66,17 +78,17 @@ public abstract class Defense implements Paintable {
                 break;
             case 3:
                 if (allianceColor.equals(RobotAllianceColor.BLUE)) {
-                    position[1] = 193;
+                    position[1] = 192;
                 } else {
-                    position[1] = 127;
+                    position[1] = 126;
                 }
 
                 break;
             case 4:
                 if (allianceColor.equals(RobotAllianceColor.BLUE)) {
-                    position[1] = 130;
+                    position[1] = 129;
                 } else {
-                    position[1] = 190;
+                    position[1] = 189;
                 }
 
                 break;
@@ -84,7 +96,7 @@ public abstract class Defense implements Paintable {
                 if (allianceColor.equals(RobotAllianceColor.BLUE)) {
                     position[1] = 66;
                 } else {
-                    position[1] = 254;
+                    position[1] = 252;
                 }
 
                 break;

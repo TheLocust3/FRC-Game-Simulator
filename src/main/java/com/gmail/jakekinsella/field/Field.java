@@ -28,6 +28,8 @@ public class Field extends JPanel {
     public static final Rectangle2D.Double topRedTowerGoal = new Rectangle2D.Double(730, 171, 32, 2);
     public static final Rectangle2D.Double middleRedTowerGoal = new Rectangle2D.Double(732, 181, 2, 32);
 
+    private int fps = 0;
+
     private Image backgroundImage;
     private static int backgroundImageWidth, backgroundImageHeight;
 
@@ -49,6 +51,10 @@ public class Field extends JPanel {
         this.redAlliance = redAlliance;
 
         setupField();
+    }
+
+    public void setFPS(int fps) {
+        this.fps = fps;
     }
 
     public static int getBackgroundImageWidth() {
@@ -95,7 +101,9 @@ public class Field extends JPanel {
         defenses.addAll(this.blueAlliance.getDefenses());
 
         for (Defense defense : defenses) {
-            // TODO: Implement detection of defenses
+            if (rectangle.intersects(defense.getRectangle())) {
+                detectedDefenses.add(defense);
+            }
         }
 
         return detectedDefenses;
@@ -180,6 +188,8 @@ public class Field extends JPanel {
         graphics2D.fill(at.createTransformedShape(topRedTowerGoal));
 
         graphics2D.fill(middleRedTowerGoal);
+
+        graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 15);
     }
 
     private void setupField() {

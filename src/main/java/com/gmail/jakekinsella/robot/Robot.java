@@ -179,19 +179,19 @@ public class Robot implements Paintable {
 
         switch (robotSide) {
             case FRONT:
-                rectAngle = this.getAngle();
+                rectAngle = this.getAngle() - 180;
                 break;
             case BACK:
-                rectAngle = this.getAngle() - 180;
+                rectAngle = this.getAngle();
                 break;
             case LEFT:
                 rectWidth = this.height;
-                rectAngle = this.getAngle() - 90;
+                rectAngle = this.getAngle() - 270;
                 offset = -Math.abs(this.height - this.width) + 5; // This 5 is a tuned value. Idk why it is needed
                 break;
             case RIGHT:
                 rectWidth = this.height;
-                rectAngle = this.getAngle() - 270;
+                rectAngle = this.getAngle() - 90;
                 offset = -Math.abs(this.height - this.width) + 5;
                 break;
         }
@@ -199,7 +199,7 @@ public class Robot implements Paintable {
         int rectX = this.getCenterX() - (rectWidth / 2);
         int rectY = this.getCenterY() + (this.height / 2) + offset;
 
-        Shape rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
+        Rectangle2D.Double rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
         return at.createTransformedShape(rect);
     }
@@ -211,11 +211,20 @@ public class Robot implements Paintable {
     public void movementTick(long delta) {
         double deltaSeconds = delta / 1000.0;
 
-        double deltaX = (deltaSeconds * this.getVelocity()) * Math.cos(this.getAngle());
-        double deltaY = (deltaSeconds * this.getVelocity()) * Math.sin(this.getAngle());
+        double radians = Math.toRadians(this.getAngle());
+        double deltaX = deltaSeconds * (this.getVelocity() * Math.sin(radians));
+        double deltaY = -deltaSeconds * (this.getVelocity() * Math.cos(radians));
 
         this.setX((int) (this.getX() + deltaX));
         this.setY((int) (this.getY() + deltaY));
+
+        if (RobotServer.getField().detectAllDefensesInRect(this.getRectangle()).size() > 0) {
+            this.setVelocity(0);
+
+            if (this.currentAction.toString().equals("TURN")) {
+                this.currentAction = new NoneAction();
+            }
+        }
     }
 
     // Process all any new commands and give actions time to update
@@ -421,9 +430,9 @@ public class Robot implements Paintable {
         this.setY(position[1]);
 
         if (this.color == RobotAllianceColor.BLUE) {
-            this.setAngle(-90);
+            this.setAngle(90);
         } else {
-            this.setAngle(angle = 90);
+            this.setAngle(-90);
         }
     }
 }

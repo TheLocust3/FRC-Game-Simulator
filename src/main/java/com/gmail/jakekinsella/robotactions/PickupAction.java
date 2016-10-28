@@ -45,7 +45,7 @@ public class PickupAction extends TimeAction {
         this.success = score;
 
         ArrayList<Ball> balls = this.robot.getBallsInFrontOf(this.pickupSide);
-        if (balls.size() == 0 || balls.size() > 1) {
+        if (balls.size() == 0) {
             logger.info(this.robot.getRobotName() + " has tried to pickup a nonexistent ball!");
             success = false;
         } else {
@@ -55,6 +55,7 @@ public class PickupAction extends TimeAction {
         this.robot.sendActionResponse();
         this.robot.actionFinish();
     }
+
     @Override
     public void actionStart() {
         if (this.robot.getBall() != null) {
