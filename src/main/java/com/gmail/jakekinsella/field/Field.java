@@ -20,6 +20,8 @@ import java.util.ArrayList;
 public class Field extends JPanel {
 
     public static final int BALL_NUMBER = 6;
+    public final int WALL_WIDTH = 4;
+
     public static final Rectangle2D.Double bottomBlueTowerGoal = new Rectangle2D.Double(-1, 197, 32, 2);
     public static final Rectangle2D.Double topBlueTowerGoal = new Rectangle2D.Double(-1, 145, 32, 2);
     public static final Rectangle2D.Double middleBlueTowerGoal = new Rectangle2D.Double(27, 157, 2, 32);
@@ -27,6 +29,8 @@ public class Field extends JPanel {
     public static final Rectangle2D.Double bottomRedTowerGoal = new Rectangle2D.Double(730, 221, 32, 2);
     public static final Rectangle2D.Double topRedTowerGoal = new Rectangle2D.Double(730, 171, 32, 2);
     public static final Rectangle2D.Double middleRedTowerGoal = new Rectangle2D.Double(732, 181, 2, 32);
+
+    public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall;
 
     private int fps = 0;
 
@@ -43,6 +47,12 @@ public class Field extends JPanel {
             backgroundImage = ImageIO.read(new File("src/main/resources/field.png"));
             backgroundImageWidth = backgroundImage.getWidth(this) / 2;
             backgroundImageHeight = backgroundImage.getHeight(this) / 2;
+
+            leftWall = new Rectangle2D.Double(-(this.WALL_WIDTH / 2), 0, this.WALL_WIDTH, backgroundImageHeight);
+            rightWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2), 0, this.WALL_WIDTH, backgroundImageHeight);
+
+            topWall = new Rectangle2D.Double(0, -(this.WALL_WIDTH / 2), backgroundImageWidth, this.WALL_WIDTH);
+            bottomWall = new Rectangle2D.Double(0, backgroundImageHeight - (this.WALL_WIDTH / 2), backgroundImageWidth, this.WALL_WIDTH);
         } catch (IOException e) {
             logger.error("Error in reading the background image", e);
         }
@@ -109,6 +119,10 @@ public class Field extends JPanel {
         }
 
         return detectedDefenses;
+    }
+
+    public boolean touchingWall(Shape rectangle) {
+        return rectangle.intersects(this.leftWall) || rectangle.intersects(this.rightWall) || rectangle.intersects(this.topWall) || rectangle.intersects(this.bottomWall);
     }
 
     public ArrayList<Rectangle2D.Double> checkIfHighGoalInRange(Shape rectangle) {

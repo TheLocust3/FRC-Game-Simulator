@@ -7,10 +7,10 @@ A simple simulator that communicates to the server throught sockets. This simula
 As you can see, many pieces that are often considered an integral part of FRC have been purposely left out. This is because this simulator was built to train AI on. Naturally, you can't train untrustworthy AI on real robots for fear of breaking them, so this is the next best thing. The AI was also built to be a top down bot, that doesn't care about "silly" details like moving its appendages. The AI looks only commands the bots with things like shoot and pickup so it made sense to make a simulator that also doesn't care about those details.  
   
 ### To-Do  
- - Write a better README and push to Github
- - Add physics for ball  
+ - Write a better README and push to Github  
  - Use a formula for the success chance of shooting a highgoal
  - Randomize the position of the ball after a missed highgoal shot
    - I don't want to deal with the physics part so just make sure the robot can't learn from the ball's end position
- - Consider goal classes
- - Implement collision detection
+ - Implement collision for tower
+ - Implement climbing the tower
+ - Implement defense crossing

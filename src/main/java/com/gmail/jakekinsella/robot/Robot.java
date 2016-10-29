@@ -242,7 +242,11 @@ public class Robot implements Paintable {
                 }
             }
         }
-    }
+
+        if (RobotServer.getField().touchingWall(this.getRectangle())) {
+            this.setVelocity(0);
+        }
+     }
 
     // Process all any new commands and give actions time to update
     public void tick() {
@@ -441,15 +445,16 @@ public class Robot implements Paintable {
         if (this.color == RobotAllianceColor.BLUE) {
             this.setX(this.getX() + 20);
         } else {
-            this.setX(this.getX() - ((this.width * 2) - 20 - 80));
+            this.setX(this.getX() - ((this.width * 2) - 20));
         }
 
-        this.setY(position[1] - 30);
+        this.setY(position[1]);
 
         if (this.color == RobotAllianceColor.BLUE) {
             this.setAngle(90);
         } else {
-            this.setAngle(-90);
+            //this.setAngle(-90);
+            this.setAngle(-180);
         }
     }
 }
