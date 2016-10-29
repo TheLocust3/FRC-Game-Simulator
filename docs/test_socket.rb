@@ -33,11 +33,7 @@ while true
         s.puts "{\"command\": \"MOVE\",\"args\": [0.5]}"
     end
 
-    if i == 5
-        s.puts "{\"command\": \"TURN\",\"args\": [135]}"
-    end
-
-    if i == 10
+    if i == 1
         s.puts "{\"command\": \"MOVE\",\"args\": [-0.5]}"
     end
 

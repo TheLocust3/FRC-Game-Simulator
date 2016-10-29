@@ -53,6 +53,10 @@ public class Field extends JPanel {
         setupField();
     }
 
+    public ArrayList<Ball> getBalls() {
+        return this.balls;
+    }
+
     public void setFPS(int fps) {
         this.fps = fps;
     }
@@ -69,9 +73,8 @@ public class Field extends JPanel {
         ArrayList<Ball> detectedBalls = new ArrayList<>();
 
         for (Ball ball : this.balls) {
-            if (rectangle.intersects(ball.getX(), ball.getY(), ball.BALL_DIAMETER, ball.BALL_DIAMETER)) {
+            if (rectangle.intersects(ball.getRectangle())) {
                 detectedBalls.add(ball);
-                System.out.println("Found ball!");
             }
         }
 
@@ -87,7 +90,6 @@ public class Field extends JPanel {
         for (Robot robot : robots) {
             if (rectangle.intersects(robot.getX(), robot.getY(), robot.getWidth(), robot.getHeight())) {
                 detectedRobots.add(robot);
-                System.out.println("Found robot!");
             }
         }
 
@@ -193,9 +195,9 @@ public class Field extends JPanel {
     }
 
     private void setupField() {
-        int interval = backgroundImageHeight / (this.BALL_NUMBER + 1);
+        int interval = backgroundImageHeight / (BALL_NUMBER + 1);
         for (int i = interval; i < backgroundImageHeight - 1; i += interval) { // The - 1 prevents a 7th ball from being drawn
-            this.balls.add(new Ball(backgroundImageWidth / 2, i));
+            this.balls.add(new Ball(backgroundImageWidth / 2 - (Ball.BALL_DIAMETER / 2), i - (Ball.BALL_DIAMETER / 2)));
         }
     }
 }

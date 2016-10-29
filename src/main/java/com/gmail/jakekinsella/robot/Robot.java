@@ -225,6 +225,23 @@ public class Robot implements Paintable {
                 this.currentAction = new NoneAction();
             }
         }
+
+        ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());
+
+        if (balls.size() > 0) {
+            for (Ball ball : balls) {
+                if (!ball.isStuck()) {
+                    ball.setAngle(this.getAngle());
+                    ball.setVelocity(this.getVelocity());
+                } else {
+                    this.setVelocity(0);
+
+                    if (this.currentAction.toString().equals("TURN")) {
+                        this.currentAction = new NoneAction();
+                    }
+                }
+            }
+        }
     }
 
     // Process all any new commands and give actions time to update
@@ -424,10 +441,10 @@ public class Robot implements Paintable {
         if (this.color == RobotAllianceColor.BLUE) {
             this.setX(this.getX() + 20);
         } else {
-            this.setX(this.getX() - ((this.width * 2) - 20));
+            this.setX(this.getX() - ((this.width * 2) - 20 - 80));
         }
 
-        this.setY(position[1]);
+        this.setY(position[1] - 30);
 
         if (this.color == RobotAllianceColor.BLUE) {
             this.setAngle(90);

@@ -2,6 +2,7 @@ package com.gmail.jakekinsella.robot;
 
 import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Mode;
+import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Field;
 import com.gmail.jakekinsella.field.defense.*;
 import org.apache.logging.log4j.LogManager;
@@ -121,6 +122,10 @@ public class RobotServer {
 
     public void run() {
         if (this.mode.equals(Mode.AUTO) || this.mode.equals(Mode.TELEOP)) {
+            for (Ball ball: this.field.getBalls()) {
+                ball.tick();
+            }
+
             this.blueAlliance.run();
             this.redAlliance.run();
 

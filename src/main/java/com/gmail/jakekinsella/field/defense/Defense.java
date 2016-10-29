@@ -25,7 +25,7 @@ public abstract class Defense implements Paintable {
         this.x = position[0];
         this.y = position[1];
 
-        this.rectangle = new Rectangle2D.Double(this.x - 8, this.y - 6, 71, 62);
+        this.rectangle = new Rectangle2D.Double(this.x - 8, this.y - 6, 69, 62);
     }
 
     public String getDefenseName() {
