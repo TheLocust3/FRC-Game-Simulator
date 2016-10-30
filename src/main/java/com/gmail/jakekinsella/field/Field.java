@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class Field extends JPanel {
 
     public static final int BALL_NUMBER = 6;
-    public final int WALL_WIDTH = 4;
+    public final int WALL_WIDTH = 6;
 
     public static final Rectangle2D.Double bottomBlueTowerGoal = new Rectangle2D.Double(-1, 197, 32, 2);
     public static final Rectangle2D.Double topBlueTowerGoal = new Rectangle2D.Double(-1, 145, 32, 2);

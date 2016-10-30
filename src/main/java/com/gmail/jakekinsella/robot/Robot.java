@@ -246,6 +246,10 @@ public class Robot implements Paintable {
         if (RobotServer.getField().touchingWall(this.getRectangle())) {
             this.setVelocity(0);
         }
+
+        if (RobotServer.getField().checkIfHighGoalInRange(this.getRectangle()).size() > 0) {
+            this.setVelocity(0);
+        }
      }
 
     // Process all any new commands and give actions time to update
@@ -453,8 +457,7 @@ public class Robot implements Paintable {
         if (this.color == RobotAllianceColor.BLUE) {
             this.setAngle(90);
         } else {
-            //this.setAngle(-90);
-            this.setAngle(-180);
+            this.setAngle(-90);
         }
     }
 }

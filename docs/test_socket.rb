@@ -33,10 +33,6 @@ while true
         s.puts "{\"command\": \"MOVE\",\"args\": [0.5]}"
     end
 
-    if i == 1
-        s.puts "{\"command\": \"MOVE\",\"args\": [-0.5]}"
-    end
-
     i += 1
 
     sleep(1)
