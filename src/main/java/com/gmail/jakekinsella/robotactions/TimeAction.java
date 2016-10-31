@@ -10,6 +10,7 @@ public class TimeAction extends Action {
 
     private long remainingTime;
     private long lastTick;
+    private int i = 0;
 
     public TimeAction(Command command, Robot robot, int time) {
         super(command, robot);
@@ -20,7 +21,9 @@ public class TimeAction extends Action {
 
     @Override
     public void tick() {
-        actionStart();
+        if (i == 0) {
+            actionStart();
+        }
 
         long delta = System.currentTimeMillis() - this.lastTick;
         this.remainingTime -= delta;
@@ -32,6 +35,8 @@ public class TimeAction extends Action {
         }
 
         this.lastTick = System.currentTimeMillis();
+
+        i++;
     }
 
     public void actionDone() {

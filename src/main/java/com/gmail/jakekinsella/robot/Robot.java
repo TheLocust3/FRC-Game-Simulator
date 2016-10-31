@@ -219,7 +219,9 @@ public class Robot implements Paintable {
         this.setY((int) (this.getY() + deltaY));
 
         if (RobotServer.getField().detectAllDefensesInRect(this.getRectangle()).size() > 0) {
-            this.setVelocity(0);
+            if (!this.currentAction.toString().equals("DEFENSE")) {
+                this.setVelocity(0);
+            }
 
             if (this.currentAction.toString().equals("TURN")) {
                 this.currentAction = new NoneAction();
@@ -295,6 +297,10 @@ public class Robot implements Paintable {
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
                 this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance, this.lowgoalSide, this.lowgoalRange);
+                break;
+            case DEFENSE:
+                logger.info(this.getRobotName() + " has started to cross a defense");
+                this.currentAction = new DefenseAction(commandInfo, this);
                 break;
         }
     }

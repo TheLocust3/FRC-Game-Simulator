@@ -1,4 +1,6 @@
 # FIRST Stronghold Simulator  
+
+As of now, development of this simulator is frozen due to the upcoming 2017 game. A simulator for the 2017 game will be created when the game is announced.
   
 ### What is it?  
 A simple simulator of the FRC 2016 game (Stronghold) that communicates to the server throught sockets. This simulates the basic Stronghold game but attempts to remove as many details as possible. For instance, instead of simulating pieces of the robot, the robot just tells the server how long it takes to shoot and how accurate it is.  
@@ -12,4 +14,7 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Randomize the position of the ball after a missed highgoal shot
    - I don't want to deal with the physics part so just make sure the robot can't learn from the ball's end position
  - Implement climbing the tower
- - Implement defense crossing
+
+### Bugs
+ - Cannot move in amounts smaller than about 100 px/s
+ - Can change action during defense cross and get stuck in the defense

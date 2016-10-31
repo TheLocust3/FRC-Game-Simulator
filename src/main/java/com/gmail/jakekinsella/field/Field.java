@@ -121,6 +121,19 @@ public class Field extends JPanel {
         return detectedDefenses;
     }
 
+    public Defense robotInDefenseDetector(Shape rectangle) {
+        ArrayList<Defense> defenses = new ArrayList<>(this.redAlliance.getDefenses());
+        defenses.addAll(this.blueAlliance.getDefenses());
+
+        for (Defense defense : defenses) {
+            if (defense.getDetectionBox().intersects(rectangle.getBounds().getCenterX(), rectangle.getBounds().getCenterY(), 1, 11)) {
+                return defense;
+            }
+        }
+
+        return null;
+    }
+
     public boolean touchingWall(Shape rectangle) {
         return rectangle.intersects(this.leftWall) || rectangle.intersects(this.rightWall) || rectangle.intersects(this.topWall) || rectangle.intersects(this.bottomWall);
     }

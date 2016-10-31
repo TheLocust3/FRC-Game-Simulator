@@ -29,8 +29,14 @@ sleep 1
 i = 0
 while true
 
+    puts s.gets.chomp
+
     if i == 0
         s.puts "{\"command\": \"MOVE\",\"args\": [0.5]}"
+    end
+
+    if i == 5
+       s.puts "{\"command\": \"DEFENSE\",\"args\": [4000]}" 
     end
 
     i += 1

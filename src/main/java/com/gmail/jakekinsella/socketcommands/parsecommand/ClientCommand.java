@@ -8,5 +8,6 @@ public enum ClientCommand {
     TURN,
     SHOOT,
     PICKUP,
-    LOWGOAL
+    LOWGOAL,
+    DEFENSE
 }

@@ -16,16 +16,26 @@ public abstract class Defense implements Paintable {
     protected RobotAllianceColor allianceColor;
 
     private Rectangle2D.Double rectangle;
+    private Rectangle2D.Double detectionBox;
 
     public Defense(int defensePosition, RobotAllianceColor allianceColor) {
         this.defensePosition = defensePosition;
         this.allianceColor = allianceColor;
 
-        int[] position = this.getPosition(allianceColor, defensePosition);
+        int[] position = getPosition(allianceColor, defensePosition);
         this.x = position[0];
         this.y = position[1];
 
         this.rectangle = new Rectangle2D.Double(this.x - 8, this.y - 6, 69, 62);
+
+        int xDetection = this.x;
+        if (this.allianceColor.equals(RobotAllianceColor.BLUE)) {
+            xDetection += 55;
+        } else {
+            xDetection -= 25;
+        }
+
+        this.detectionBox = new Rectangle2D.Double(xDetection, this.y + 20, 30, 10);
     }
 
     public String getDefenseName() {
@@ -40,10 +50,21 @@ public abstract class Defense implements Paintable {
         return this.rectangle;
     }
 
+    public Rectangle2D.Double getDetectionBox() {
+        return this.detectionBox;
+    }
+
+    public RobotAllianceColor getAllianceColor() {
+        return allianceColor;
+    }
+
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
         graphics2D.setColor(Color.BLUE);
         graphics2D.draw(this.getRectangle());
+
+        graphics2D.setColor(Color.YELLOW);
+        graphics2D.draw(this.getDetectionBox());
 
         graphics.setFont(new Font("Arial", Font.PLAIN, 6));
         graphics.setColor(Color.BLACK);
