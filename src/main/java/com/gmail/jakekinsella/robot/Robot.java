@@ -4,7 +4,6 @@ import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.Ball;
-import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robotactions.*;
 import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
@@ -35,7 +34,6 @@ public class Robot implements Paintable {
     private double angle;
     private double velocity; // in pixels per second
     private String robotName;
-    private int defensePosition;
     private int pickupRange, highgoalRange, lowgoalRange;
     private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
     private int pickupTime, highgoalTime, lowgoalTime;
@@ -218,16 +216,6 @@ public class Robot implements Paintable {
         this.setX((int) (this.getX() + deltaX));
         this.setY((int) (this.getY() + deltaY));
 
-        if (RobotServer.getField().detectAllDefensesInRect(this.getRectangle()).size() > 0) {
-            if (!this.currentAction.toString().equals("DEFENSE")) {
-                this.setVelocity(0);
-            }
-
-            if (this.currentAction.toString().equals("TURN")) {
-                this.currentAction = new NoneAction();
-            }
-        }
-
         ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());
 
         if (balls.size() > 0) {
@@ -297,10 +285,6 @@ public class Robot implements Paintable {
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
                 this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance, this.lowgoalSide, this.lowgoalRange);
-                break;
-            case DEFENSE:
-                logger.info(this.getRobotName() + " has started to cross a defense");
-                this.currentAction = new DefenseAction(commandInfo, this);
                 break;
         }
     }
@@ -418,7 +402,7 @@ public class Robot implements Paintable {
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
 
         this.color = RobotAllianceColor.valueOf((String) jsonRobot.get("allianceColor"));
-        this.defensePosition = ((Long) jsonRobot.get("startDefense")).intValue();
+        int startY = ((Long) jsonRobot.get("startY")).intValue();
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
         this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
@@ -442,28 +426,13 @@ public class Robot implements Paintable {
         this.degreePerMillisecond = (Double) jsonRobot.get("degreePerMillisecond");
         this.maxVelocity = (Double) jsonRobot.get("maxVelocity");
 
-        RobotAllianceColor startColor; // Robots start in front of the opposite defenses
-        if (this.color == RobotAllianceColor.BLUE) {
-            startColor = RobotAllianceColor.RED;
-        } else {
-            startColor = RobotAllianceColor.BLUE;
-        }
-
-        int[] position = Defense.getPosition(startColor, this.defensePosition);
-        this.setX(Main.FRAME_WIDTH / 2);
-
-        if (this.color == RobotAllianceColor.BLUE) {
-            this.setX(this.getX() + 20);
-        } else {
-            this.setX(this.getX() - ((this.width * 2) - 20));
-        }
-
-        this.setY(position[1]);
-
-        if (this.color == RobotAllianceColor.BLUE) {
+        this.setY(startY);
+        if (this.color == RobotAllianceColor.RED) {
+            this.setX(40);
             this.setAngle(90);
         } else {
-            this.setAngle(-90);
+            this.setX((int) (Main.FRAME_WIDTH - (1.5 * this.getHeight()))); // TODO: figure out why the heck this is 1.5
+            this.setAngle(270);
         }
     }
 }

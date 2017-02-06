@@ -1,7 +1,7 @@
 {
   "Momentum": {
-    "allianceColor": "RED",
-    "startDefense": 1,
+    "allianceColor": "BLUE",
+    "startY": 100,
     "width": 40,
     "height": 50,
     "pickupSide": "FRONT",

@@ -4,7 +4,6 @@ import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Mode;
 import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Field;
-import com.gmail.jakekinsella.field.defense.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -150,70 +149,6 @@ public class RobotServer {
         redAlliance = new RobotAlliance(RobotAllianceColor.RED);
         blueAlliance = new RobotAlliance(RobotAllianceColor.BLUE);
 
-        this.setupDefenses();
-
         field = new Field(redAlliance, blueAlliance);
-    }
-
-    private void setupDefenses() {
-        JSONFileReader jsonFileReader = new JSONFileReader("src/main/resources/defenses.json");
-        JSONArray redStringDefenses = ((JSONArray) jsonFileReader.getJSONObject().get("RED"));
-        JSONArray blueStringDefenses = ((JSONArray) jsonFileReader.getJSONObject().get("BLUE"));
-
-        ArrayList<Defense> redDefenses = new ArrayList<>();
-
-        redDefenses.add(this.createDefense((String) redStringDefenses.get(0), 1, redAlliance.getColor()));
-        redDefenses.add(this.createDefense((String) redStringDefenses.get(1), 2, redAlliance.getColor()));
-        redDefenses.add(this.createDefense((String) redStringDefenses.get(2), 3, redAlliance.getColor()));
-        redDefenses.add(this.createDefense((String) redStringDefenses.get(3), 4, redAlliance.getColor()));
-        redDefenses.add(this.createDefense((String) redStringDefenses.get(4), 5, redAlliance.getColor()));
-
-        redAlliance.setAllDefenses(redDefenses);
-
-        ArrayList<Defense> blueDefenses = new ArrayList<>();
-
-        blueDefenses.add(this.createDefense((String) blueStringDefenses.get(0), 1, blueAlliance.getColor()));
-        blueDefenses.add(this.createDefense((String) blueStringDefenses.get(1), 2, blueAlliance.getColor()));
-        blueDefenses.add(this.createDefense((String) blueStringDefenses.get(2), 3, blueAlliance.getColor()));
-        blueDefenses.add(this.createDefense((String) blueStringDefenses.get(3), 4, blueAlliance.getColor()));
-        blueDefenses.add(this.createDefense((String) blueStringDefenses.get(4), 5, blueAlliance.getColor()));
-
-        blueAlliance.setAllDefenses(blueDefenses);
-    }
-
-    private Defense createDefense(String defenseName, int defensePosition, RobotAllianceColor allianceColor) {
-        Defense defense = null;
-
-        switch (defenseName) {
-            case "lowbar":
-                defense = new LowbarDefense(defensePosition, allianceColor);
-                break;
-            case "portcullis":
-                defense = new PortcullisDefense(defensePosition, allianceColor);
-                break;
-            case "cheval_de_frise":
-                defense = new ChevalDeFriseDefense(defensePosition, allianceColor);
-                break;
-            case "moat":
-                defense = new MoatDefense(defensePosition, allianceColor);
-                break;
-            case "ramparts":
-                defense = new RampartsDefense(defensePosition, allianceColor);
-                break;
-            case "drawbridge":
-                defense = new DrawbridgeDefense(defensePosition, allianceColor);
-                break;
-            case "sally_port":
-                defense = new SallyPortDefense(defensePosition, allianceColor);
-                break;
-            case "rock_wall":
-                defense = new RockWallDefense(defensePosition, allianceColor);
-                break;
-            case "rough_terrain":
-                defense = new RoughTerrainDefense(defensePosition, allianceColor);
-                break;
-        }
-
-        return defense;
     }
 }

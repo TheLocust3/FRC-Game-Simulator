@@ -1,6 +1,5 @@
 package com.gmail.jakekinsella.field;
 
-import com.gmail.jakekinsella.field.defense.Defense;
 import com.gmail.jakekinsella.robot.*;
 import com.gmail.jakekinsella.robot.Robot;
 import org.apache.logging.log4j.LogManager;
@@ -99,34 +98,6 @@ public class Field extends JPanel {
         }
 
         return detectedRobots;
-    }
-
-    public ArrayList<Defense> detectAllDefensesInRect(Shape rectangle) {
-        ArrayList<Defense> detectedDefenses = new ArrayList<>();
-
-        ArrayList<Defense> defenses = new ArrayList<>(this.redAlliance.getDefenses());
-        defenses.addAll(this.blueAlliance.getDefenses());
-
-        for (Defense defense : defenses) {
-            if (rectangle.intersects(defense.getRectangle())) {
-                detectedDefenses.add(defense);
-            }
-        }
-
-        return detectedDefenses;
-    }
-
-    public Defense robotInDefenseDetector(Shape rectangle) {
-        ArrayList<Defense> defenses = new ArrayList<>(this.redAlliance.getDefenses());
-        defenses.addAll(this.blueAlliance.getDefenses());
-
-        for (Defense defense : defenses) {
-            if (defense.getDetectionBox().intersects(rectangle.getBounds().getCenterX(), rectangle.getBounds().getCenterY(), 1, 11)) {
-                return defense;
-            }
-        }
-
-        return null;
     }
 
     public boolean touchingWall(Shape rectangle) {

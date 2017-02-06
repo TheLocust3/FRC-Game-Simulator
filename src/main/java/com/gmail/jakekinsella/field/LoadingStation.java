@@ -49,9 +49,9 @@ public class LoadingStation extends FieldElement {
             case 2:
                 y = 163;
                 if (allianceColor == RobotAllianceColor.BLUE) {
-                    x = 710;
-                } else {
                     x = 0;
+                } else {
+                    x = 710;
                 }
 
                 break;

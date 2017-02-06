@@ -72,7 +72,7 @@ public class Ball implements Paintable {
     }
 
     public boolean isStuck() {
-        return RobotServer.getField().detectAllDefensesInRect(this.getRectangle()).size() > 0;
+        return false; // TODO: implement this method
     }
 
     public void tick() {
