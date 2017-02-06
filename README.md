@@ -9,13 +9,19 @@ A simple simulator of the FRC 2016 game (Stronghold) that communicates to the se
 As you can see, many pieces that are often considered an integral part of FRC have been purposely left out. This is because this simulator was built to train AI on. Naturally, you can't train untrustworthy AI on real robots for fear of breaking them, so this is the next best thing. The AI was also built to be purely strategic (go here and do that), and it doesn't care about "silly" details like moving its appendages or exactly how to pick up a ball. The AI only commands the bots with things like shoot and pickup so it makeds sense that the simulator should also only know about those details.  
   
 ### To-Do  
- - Update for the 2017 game, Steamworks
- - Use a formula for the success chance of shooting a highgoal that is based on distance
- - Randomize the position of the ball after a missed highgoal shot
-   - I don't want to deal with the physics part so just make sure the robot can't learn from the ball's end position
- - Implement climbing the tower
+ - Update for the 2017 game, Steamworks (List in order of priority)
+   - Place gear on Airship
+   - Climb
+   - Load gear from Human Player Station
+   - Load balls from Human Player Station
+   - Highgoal on the Boiler
+   - Lowgoal on the Boiler
+   - Intake balls from the ground
+   - Empty Hopper
+   - Intake gears from the ground
  - Create a wiki documenting how to actually write code for this simulator
 
 ### Bugs
  - Cannot move in amounts smaller than about 100 px/s
  - Can change action during defense cross and get stuck in the defense
+ - Simulator stalls if the wrong type is sent over the socket

@@ -10,8 +10,8 @@ import java.io.IOException;
  */
 public class Main {
 
-    public static final int FRAME_WIDTH = 760;
-    public static final int FRAME_HEIGHT = 394;
+    public static final int FRAME_WIDTH = 743;
+    public static final int FRAME_HEIGHT = 426;
 
     public static void main(String args[]) throws IOException {
         JFrame frame = new JFrame();

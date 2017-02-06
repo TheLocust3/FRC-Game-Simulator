@@ -62,7 +62,7 @@ public class SocketCommand {
             return command;
         }
 
-        throw new Exception("Client failed to respond correctly");
+        throw new Exception("Client failed to respond correctly: " + command.toString());
     }
 
     protected Command parseLine() throws ParseException {
@@ -81,9 +81,8 @@ public class SocketCommand {
 
     protected String readln() {
         try {
-            while (!this.socketReader.ready()) {
-                logger.debug("Waiting to receive response from client...");
-            }
+            logger.debug("Waiting to receive response from client...");
+            while (!this.socketReader.ready()) {}
 
             return this.socketReader.readLine();
         } catch (IOException e) {

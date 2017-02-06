@@ -50,7 +50,7 @@ public class ShootAction extends TimeAction {
             logger.info(this.robot.getRobotName() + " doesn't have a ball!");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
-        } else if (RobotServer.getField().checkIfHighGoalInRange(this.robot.createDetectionRect(this.shootSide, this.range)).size() == 0) {
+        } else if (RobotServer.getField().checkIfBoilerInRange(this.robot.createDetectionRect(this.shootSide, this.range)).size() == 0) {
             success = false;
             logger.info(this.robot.getRobotName() + " isn't in range of the highgoal");
             this.robot.actionFinish();

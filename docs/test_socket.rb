@@ -32,11 +32,7 @@ while true
     puts s.gets.chomp
 
     if i == 0
-        s.puts "{\"command\": \"MOVE\",\"args\": [0.5]}"
-    end
-
-    if i == 5
-       s.puts "{\"command\": \"DEFENSE\",\"args\": [4000]}" 
+        s.puts "{\"command\": \"TURN\",\"args\": [180]}"
     end
 
     i += 1

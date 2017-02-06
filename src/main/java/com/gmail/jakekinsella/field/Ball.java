@@ -13,7 +13,7 @@ import java.awt.geom.Rectangle2D;
  */
 public class Ball implements Paintable {
 
-    public static final int BALL_DIAMETER = 10;
+    public static final int BALL_DIAMETER = 5;
 
     private int x, y;
     private double velocity, angle;
@@ -95,7 +95,7 @@ public class Ball implements Paintable {
 
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
-        graphics.setColor(Color.BLACK);
+        graphics.setColor(Color.GREEN);
 
         graphics.fillOval(this.getX(), this.getY(), BALL_DIAMETER, BALL_DIAMETER);
     }

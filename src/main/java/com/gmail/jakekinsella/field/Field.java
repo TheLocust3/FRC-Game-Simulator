@@ -22,13 +22,8 @@ public class Field extends JPanel {
     public static final int BALL_NUMBER = 6;
     public final int WALL_WIDTH = 6;
 
-    public static final Rectangle2D.Double bottomBlueTowerGoal = new Rectangle2D.Double(-1, 197, 32, 2);
-    public static final Rectangle2D.Double topBlueTowerGoal = new Rectangle2D.Double(-1, 145, 32, 2);
-    public static final Rectangle2D.Double middleBlueTowerGoal = new Rectangle2D.Double(27, 157, 2, 32);
-
-    public static final Rectangle2D.Double bottomRedTowerGoal = new Rectangle2D.Double(730, 221, 32, 2);
-    public static final Rectangle2D.Double topRedTowerGoal = new Rectangle2D.Double(730, 171, 32, 2);
-    public static final Rectangle2D.Double middleRedTowerGoal = new Rectangle2D.Double(732, 181, 2, 32);
+    public static final Rectangle2D.Double redBoiler = new Rectangle2D.Double(17, 355, 45, 40);
+    public static final Rectangle2D.Double blueBoiler = new Rectangle2D.Double(682, 355, 45, 40);
 
     public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall;
 
@@ -138,53 +133,15 @@ public class Field extends JPanel {
         return rectangle.intersects(this.leftWall) || rectangle.intersects(this.rightWall) || rectangle.intersects(this.topWall) || rectangle.intersects(this.bottomWall);
     }
 
-    public ArrayList<Rectangle2D.Double> checkIfHighGoalInRange(Shape rectangle) {
+    public ArrayList<Rectangle2D.Double> checkIfBoilerInRange(Shape rectangle) {
         ArrayList<Rectangle2D.Double> goals = new ArrayList<>();
 
-        if (rectangle.intersects(bottomBlueTowerGoal)) {
-            goals.add(bottomBlueTowerGoal);
+        if (rectangle.intersects(blueBoiler)) {
+            goals.add(blueBoiler);
         }
 
-        if (rectangle.intersects(bottomRedTowerGoal)) {
-            goals.add(bottomRedTowerGoal);
-        }
-
-        if (rectangle.intersects(middleBlueTowerGoal)) {
-            goals.add(middleBlueTowerGoal);
-        }
-
-        if (rectangle.intersects(middleRedTowerGoal)) {
-            goals.add(middleRedTowerGoal);
-        }
-
-        if (rectangle.intersects(topBlueTowerGoal)) {
-            goals.add(topBlueTowerGoal);
-        }
-
-        if (rectangle.intersects(topRedTowerGoal)) {
-            goals.add(topRedTowerGoal);
-        }
-
-        return goals;
-    }
-
-    public ArrayList<Rectangle2D.Double> checkIfLowGoalInRange(Shape rectangle) {
-        ArrayList<Rectangle2D.Double> goals = new ArrayList<>();
-
-        if (rectangle.intersects(bottomBlueTowerGoal)) {
-            goals.add(bottomBlueTowerGoal);
-        }
-
-        if (rectangle.intersects(bottomRedTowerGoal)) {
-            goals.add(bottomRedTowerGoal);
-        }
-
-        if (rectangle.intersects(topBlueTowerGoal)) {
-            goals.add(topBlueTowerGoal);
-        }
-
-        if (rectangle.intersects(topRedTowerGoal)) {
-            goals.add(topRedTowerGoal);
+        if (rectangle.intersects(redBoiler)) {
+            goals.add(redBoiler);
         }
 
         return goals;
@@ -202,23 +159,15 @@ public class Field extends JPanel {
             ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
 
-        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(-30), bottomBlueTowerGoal.getCenterX(), bottomBlueTowerGoal.getCenterY());
-        graphics2D.fill(at.createTransformedShape(bottomBlueTowerGoal));
+        graphics.setColor(Color.BLUE);
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(-45), blueBoiler.getCenterX(), blueBoiler.getCenterY());
+        graphics2D.fill(at.createTransformedShape(blueBoiler));
 
-        at = AffineTransform.getRotateInstance(Math.toRadians(30), topBlueTowerGoal.getCenterX(), topBlueTowerGoal.getCenterY());
-        graphics2D.fill(at.createTransformedShape(topBlueTowerGoal));
+        graphics.setColor(Color.RED);
+        at = AffineTransform.getRotateInstance(Math.toRadians(45), redBoiler.getCenterX(), redBoiler.getCenterY());
+        graphics2D.fill(at.createTransformedShape(redBoiler));
 
-        graphics2D.fill(middleBlueTowerGoal);
-
-        at = AffineTransform.getRotateInstance(Math.toRadians(30), bottomRedTowerGoal.getCenterX(), bottomRedTowerGoal.getCenterY());
-        graphics2D.fill(at.createTransformedShape(bottomRedTowerGoal));
-
-        at = AffineTransform.getRotateInstance(Math.toRadians(-30), topRedTowerGoal.getCenterX(), topRedTowerGoal.getCenterY());
-        graphics2D.fill(at.createTransformedShape(topRedTowerGoal));
-
-        graphics2D.fill(middleRedTowerGoal);
-
-        graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 15);
+        graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 25);
     }
 
     private void setupField() {
