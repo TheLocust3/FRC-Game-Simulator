@@ -50,6 +50,7 @@ public class Field extends JPanel {
         this.redAlliance = redAlliance;
 
         this.setupWalls();
+        this.setupHoppers();
         setupField();
     }
 
@@ -146,6 +147,10 @@ public class Field extends JPanel {
         graphics2D.fill(this.rotateRect(leftCornerBottomWall, 45));
         graphics2D.fill(this.rotateRect(rightCornerBottomWall, -45));
 
+        for (Hopper hopper : this.hoppers) {
+            hopper.paint(graphics, graphics2D);
+        }
+
         graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 25);
     }
 
@@ -166,6 +171,15 @@ public class Field extends JPanel {
 
         leftCornerBottomWall = new Rectangle2D.Double(23, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
         rightCornerBottomWall = new Rectangle2D.Double(backgroundImageWidth - 80, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
+    }
+
+    private void setupHoppers() {
+        this.hoppers = new ArrayList<>();
+        this.hoppers.add(new Hopper(0));
+        this.hoppers.add(new Hopper(1));
+        this.hoppers.add(new Hopper(2));
+        this.hoppers.add(new Hopper(3));
+        this.hoppers.add(new Hopper(4));
     }
 
     private void setupField() {

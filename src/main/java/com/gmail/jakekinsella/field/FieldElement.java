@@ -49,7 +49,7 @@ public class FieldElement implements Paintable {
         } else if (this.getAllianceColor() == RobotAllianceColor.RED){
             graphics2D.setColor(Color.RED);
         } else {
-            graphics2D.setColor(Color.WHITE);
+            graphics2D.setColor(Color.LIGHT_GRAY);
         }
 
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(this.angle), this.getRectangle().getCenterX(), this.getRectangle().getCenterY());

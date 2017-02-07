@@ -8,7 +8,7 @@ import com.gmail.jakekinsella.robot.RobotAllianceColor;
 public class Hopper extends FieldElement {
 
     public Hopper(int position) {
-        super(0, 0, 30, 30, 0, 10, RobotAllianceColor.NONE);
+        super(0, 0, 30, 9, 0, 0, RobotAllianceColor.NONE);
 
         int[] point = this.positionToPoint(position);
         this.x = point[0];
@@ -20,24 +20,24 @@ public class Hopper extends FieldElement {
         int x = 0, y = 0;
         switch (position) {
             case 0:
-                x = 27;
-                y = 50;
+                x = 234;
+                y = 45;
                 break;
             case 1:
-                x = 69;
-                y = 28;
+                x = 481;
+                y = 45;
                 break;
             case 2:
-                x = 0;
-                y = 163;
+                x = 144;
+                y = 369;
                 break;
             case 3:
-                x = 0;
-                y = 163;
+                x = 357;
+                y = 369;
                 break;
             case 4:
-                x = 0;
-                y = 163;
+                x = 570;
+                y = 369;
                 break;
         }
 
