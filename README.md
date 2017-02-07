@@ -1,6 +1,4 @@
 # FIRST Stronghold Simulator  
-
-Development on this simulator will resume when the 2017 game is announced (January 7th)  
   
 ### What is it?  
 A simple simulator of the FRC 2016 game (Stronghold) that communicates to the server throught sockets. This simulates the basic Stronghold game but attempts to remove as many details as possible. For instance, instead of simulating pieces of the robot, the robot just tells the server how long it takes to shoot and how accurate it is.  
