@@ -5,5 +5,6 @@ package com.gmail.jakekinsella.robot;
  */
 public enum RobotAllianceColor {
     RED,
-    BLUE
+    BLUE,
+    NONE
 }

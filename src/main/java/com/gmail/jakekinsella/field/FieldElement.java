@@ -44,10 +44,12 @@ public class FieldElement implements Paintable {
 
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
-        if (this.getAllianceColor().equals(RobotAllianceColor.BLUE)) {
+        if (this.getAllianceColor() == RobotAllianceColor.BLUE) {
             graphics2D.setColor(Color.BLUE);
-        } else {
+        } else if (this.getAllianceColor() == RobotAllianceColor.RED){
             graphics2D.setColor(Color.RED);
+        } else {
+            graphics2D.setColor(Color.WHITE);
         }
 
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(this.angle), this.getRectangle().getCenterX(), this.getRectangle().getCenterY());

@@ -18,13 +18,13 @@ import java.util.ArrayList;
  */
 public class Field extends JPanel {
 
-    public static final int BALL_NUMBER = 6;
-    public final int WALL_WIDTH = 6;
+    private final int BALL_NUMBER = 6;
+    private final int WALL_WIDTH = 6;
 
-    public static final Rectangle2D.Double redBoiler = new Rectangle2D.Double(17, 355, 45, 40);
-    public static final Rectangle2D.Double blueBoiler = new Rectangle2D.Double(682, 355, 45, 40);
+    private final Rectangle2D.Double redBoiler = new Rectangle2D.Double(17, 355, 45, 40);
+    private final Rectangle2D.Double blueBoiler = new Rectangle2D.Double(682, 355, 45, 40);
 
-    public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall;
+    public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall, leftCornerTopWall, leftCornerBottomWall, rightCornerTopWall, rightCornerBottomWall;
 
     private int fps = 0;
 
@@ -32,6 +32,7 @@ public class Field extends JPanel {
     private static int backgroundImageWidth, backgroundImageHeight;
 
     private ArrayList<Ball> balls = new ArrayList<>();
+    private ArrayList<Hopper> hoppers = new ArrayList<>();
     private RobotAlliance blueAlliance, redAlliance;
 
     private static final Logger logger = LogManager.getLogger();
@@ -41,12 +42,6 @@ public class Field extends JPanel {
             backgroundImage = ImageIO.read(new File("src/main/resources/field.png"));
             backgroundImageWidth = backgroundImage.getWidth(this) / 2;
             backgroundImageHeight = backgroundImage.getHeight(this) / 2;
-
-            leftWall = new Rectangle2D.Double(-(this.WALL_WIDTH / 2), 0, this.WALL_WIDTH, backgroundImageHeight);
-            rightWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2), 0, this.WALL_WIDTH, backgroundImageHeight);
-
-            topWall = new Rectangle2D.Double(0, -(this.WALL_WIDTH / 2), backgroundImageWidth, this.WALL_WIDTH);
-            bottomWall = new Rectangle2D.Double(0, backgroundImageHeight - (this.WALL_WIDTH / 2), backgroundImageWidth, this.WALL_WIDTH);
         } catch (IOException e) {
             logger.error("Error in reading the background image", e);
         }
@@ -54,6 +49,7 @@ public class Field extends JPanel {
         this.blueAlliance = blueAlliance;
         this.redAlliance = redAlliance;
 
+        this.setupWalls();
         setupField();
     }
 
@@ -101,7 +97,8 @@ public class Field extends JPanel {
     }
 
     public boolean touchingWall(Shape rectangle) {
-        return rectangle.intersects(this.leftWall) || rectangle.intersects(this.rightWall) || rectangle.intersects(this.topWall) || rectangle.intersects(this.bottomWall);
+        return rectangle.intersects(this.leftWall) || rectangle.intersects(this.rightWall) || rectangle.intersects(this.topWall) || rectangle.intersects(this.bottomWall)
+                || rectangle.intersects(this.leftCornerTopWall) || rectangle.intersects(this.leftCornerBottomWall) || rectangle.intersects(this.rightCornerTopWall) || rectangle.intersects(this.rightCornerBottomWall);
     }
 
     public ArrayList<Rectangle2D.Double> checkIfBoilerInRange(Shape rectangle) {
@@ -130,15 +127,45 @@ public class Field extends JPanel {
             ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
 
+        // draw boilers
         graphics.setColor(Color.BLUE);
-        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(-45), blueBoiler.getCenterX(), blueBoiler.getCenterY());
-        graphics2D.fill(at.createTransformedShape(blueBoiler));
+        graphics2D.fill(this.rotateRect(blueBoiler, -45));
 
         graphics.setColor(Color.RED);
-        at = AffineTransform.getRotateInstance(Math.toRadians(45), redBoiler.getCenterX(), redBoiler.getCenterY());
-        graphics2D.fill(at.createTransformedShape(redBoiler));
+        graphics2D.fill(this.rotateRect(redBoiler, 45));
+
+        // draw walls
+        graphics.setColor(Color.BLACK);
+        graphics2D.fill(leftWall);
+        graphics2D.fill(rightWall);
+        graphics2D.fill(topWall);
+        graphics2D.fill(bottomWall);
+
+        graphics2D.fill(this.rotateRect(leftCornerTopWall, -27));
+        graphics2D.fill(this.rotateRect(rightCornerTopWall, 207));
+        graphics2D.fill(this.rotateRect(leftCornerBottomWall, 45));
+        graphics2D.fill(this.rotateRect(rightCornerBottomWall, -45));
 
         graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 25);
+    }
+
+    private Shape rotateRect(Rectangle2D.Double rect, double degrees) {
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(degrees), rect.getCenterX(), rect.getCenterY());
+        return at.createTransformedShape(rect);
+    }
+
+    private void setupWalls() {
+        leftWall = new Rectangle2D.Double(-(this.WALL_WIDTH / 2) + 32, 84, this.WALL_WIDTH, backgroundImageHeight - 165);
+        rightWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2) - 32, 83, this.WALL_WIDTH, backgroundImageHeight - 165);
+
+        topWall = new Rectangle2D.Double(110, -(this.WALL_WIDTH / 2) + 42, backgroundImageWidth - 216, this.WALL_WIDTH);
+        bottomWall = new Rectangle2D.Double(70, backgroundImageHeight - (this.WALL_WIDTH / 2) - 45, backgroundImageWidth - 140, this.WALL_WIDTH);
+
+        leftCornerTopWall = new Rectangle2D.Double(25, -(this.WALL_WIDTH / 2) + 63, 90, this.WALL_WIDTH);
+        rightCornerTopWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2) - 110, -(this.WALL_WIDTH / 2) + 64, 90, this.WALL_WIDTH);
+
+        leftCornerBottomWall = new Rectangle2D.Double(23, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
+        rightCornerBottomWall = new Rectangle2D.Double(backgroundImageWidth - 80, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
     }
 
     private void setupField() {

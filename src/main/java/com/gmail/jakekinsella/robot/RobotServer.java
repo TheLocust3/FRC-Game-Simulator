@@ -6,22 +6,20 @@ import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Created by jakekinsella on 9/12/16.
  */
 public class RobotServer {
 
-    public static final int AUTO_TIME = 15000;
-    public static final int TELEOP_TIME = 135000;
-    public static final int MAP_UPDATE_INTERVAL = 1000;
+    private final int AUTO_TIME = 15000;
+    private final int TELEOP_TIME = 135000;
+    private final int MAP_UPDATE_INTERVAL = 1000;
 
     private long modeStartTime, lastMapUpdateTime;
     private ServerSocket serverSocket;
