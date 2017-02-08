@@ -32,7 +32,7 @@ public class Field extends JPanel {
     private static int backgroundImageWidth, backgroundImageHeight;
 
     private ArrayList<Ball> balls = new ArrayList<>();
-    private ArrayList<Hopper> hoppers = new ArrayList<>();
+    private ArrayList<Hopper> hoppers;
     private RobotAlliance blueAlliance, redAlliance;
 
     private static final Logger logger = LogManager.getLogger();

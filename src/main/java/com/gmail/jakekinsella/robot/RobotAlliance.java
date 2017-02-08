@@ -1,6 +1,7 @@
 package com.gmail.jakekinsella.robot;
 
 import com.gmail.jakekinsella.Paintable;
+import com.gmail.jakekinsella.field.AirshipStation;
 import com.gmail.jakekinsella.field.LoadingStation;
 import com.gmail.jakekinsella.field.Score;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,7 @@ public class RobotAlliance implements Paintable {
     private Score score;
     private ArrayList<Robot> robots;
     private ArrayList<LoadingStation> loadingStations = new ArrayList<>();
+    private ArrayList<AirshipStation> airshipStations = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -28,9 +30,13 @@ public class RobotAlliance implements Paintable {
         this.score = new Score(this.color);
         this.robots = new ArrayList<>();
 
-        loadingStations.add(new LoadingStation(0, this.getColor()));
-        loadingStations.add(new LoadingStation(1, this.getColor()));
-        loadingStations.add(new LoadingStation(2, this.getColor()));
+        this.loadingStations.add(new LoadingStation(0, this.getColor()));
+        this.loadingStations.add(new LoadingStation(1, this.getColor()));
+        this.loadingStations.add(new LoadingStation(2, this.getColor()));
+
+        this.airshipStations.add(new AirshipStation(0, this.getColor()));
+        this.airshipStations.add(new AirshipStation(1, this.getColor()));
+        this.airshipStations.add(new AirshipStation(2, this.getColor()));
     }
 
     public RobotAllianceColor getColor() {
@@ -110,6 +116,10 @@ public class RobotAlliance implements Paintable {
 
         for (LoadingStation loadingStation : this.loadingStations) {
             loadingStation.paint(graphics, graphics2D);
+        }
+
+        for (AirshipStation airshipStation : this.airshipStations) {
+            airshipStation.paint(graphics, graphics2D);
         }
 
         score.paint(graphics, graphics2D);
