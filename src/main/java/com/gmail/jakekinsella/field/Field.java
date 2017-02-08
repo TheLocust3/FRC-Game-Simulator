@@ -21,9 +21,6 @@ public class Field extends JPanel {
     private final int BALL_NUMBER = 6;
     private final int WALL_WIDTH = 6;
 
-    private final Rectangle2D.Double redBoiler = new Rectangle2D.Double(17, 355, 45, 40);
-    private final Rectangle2D.Double blueBoiler = new Rectangle2D.Double(682, 355, 45, 40);
-
     public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall, leftCornerTopWall, leftCornerBottomWall, rightCornerTopWall, rightCornerBottomWall;
 
     private int fps = 0;
@@ -102,18 +99,16 @@ public class Field extends JPanel {
                 || rectangle.intersects(this.leftCornerTopWall) || rectangle.intersects(this.leftCornerBottomWall) || rectangle.intersects(this.rightCornerTopWall) || rectangle.intersects(this.rightCornerBottomWall);
     }
 
-    public ArrayList<Rectangle2D.Double> checkIfBoilerInRange(Shape rectangle) {
-        ArrayList<Rectangle2D.Double> goals = new ArrayList<>();
-
-        if (rectangle.intersects(blueBoiler)) {
-            goals.add(blueBoiler);
+    public boolean checkIfBoilerInRange(Shape rectangle) {
+        if (rectangle.intersects(this.blueAlliance.getBoiler().getDetectionBox())) {
+            return true;
         }
 
-        if (rectangle.intersects(redBoiler)) {
-            goals.add(redBoiler);
+        if (rectangle.intersects(this.redAlliance.getBoiler().getDetectionBox())) {
+            return true;
         }
 
-        return goals;
+        return false;
     }
 
     public void paintComponent(Graphics graphics) {
@@ -127,13 +122,6 @@ public class Field extends JPanel {
         for (Ball ball : this.balls) {
             ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
-
-        // draw boilers
-        graphics.setColor(Color.BLUE);
-        graphics2D.fill(this.rotateRect(blueBoiler, -45));
-
-        graphics.setColor(Color.RED);
-        graphics2D.fill(this.rotateRect(redBoiler, 45));
 
         // draw walls
         graphics.setColor(Color.BLACK);

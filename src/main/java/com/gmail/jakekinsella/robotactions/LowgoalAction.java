@@ -50,7 +50,7 @@ public class LowgoalAction extends TimeAction {
             logger.info(this.robot.getRobotName() + " doesn't have a ball!");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
-        } else if (RobotServer.getField().checkIfBoilerInRange(this.robot.createDetectionRect(this.pickupSide, this.range)).size() == 0) {
+        } else if (RobotServer.getField().checkIfBoilerInRange(this.robot.createDetectionRect(this.pickupSide, this.range))) {
             success = false;
             logger.info(this.robot.getRobotName() + " isn't in range of the lowgoal");
             this.robot.actionFinish();

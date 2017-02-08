@@ -2,6 +2,7 @@ package com.gmail.jakekinsella.robot;
 
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.AirshipStation;
+import com.gmail.jakekinsella.field.Boiler;
 import com.gmail.jakekinsella.field.LoadingStation;
 import com.gmail.jakekinsella.field.Score;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,7 @@ public class RobotAlliance implements Paintable {
     private RobotAllianceColor color;
     private Score score;
     private ArrayList<Robot> robots;
+    private Boiler boiler;
     private ArrayList<LoadingStation> loadingStations = new ArrayList<>();
     private ArrayList<AirshipStation> airshipStations = new ArrayList<>();
 
@@ -29,6 +31,8 @@ public class RobotAlliance implements Paintable {
         this.color = color;
         this.score = new Score(this.color);
         this.robots = new ArrayList<>();
+
+        this.boiler = new Boiler(this.getColor());
 
         this.loadingStations.add(new LoadingStation(0, this.getColor()));
         this.loadingStations.add(new LoadingStation(1, this.getColor()));
@@ -49,6 +53,10 @@ public class RobotAlliance implements Paintable {
 
     public ArrayList<Robot> getRobots() {
         return this.robots;
+    }
+
+    public Boiler getBoiler() {
+        return this.boiler;
     }
 
     public void addRobot(Robot robot) {
@@ -113,6 +121,8 @@ public class RobotAlliance implements Paintable {
         for (Robot robot : this.robots) {
             robot.paint(graphics, graphics2D);
         }
+
+        this.boiler.paint(graphics, graphics2D);
 
         for (LoadingStation loadingStation : this.loadingStations) {
             loadingStation.paint(graphics, graphics2D);

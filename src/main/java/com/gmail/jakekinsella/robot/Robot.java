@@ -237,7 +237,7 @@ public class Robot implements Paintable {
             this.setVelocity(0);
         }
 
-        if (RobotServer.getField().checkIfBoilerInRange(this.getRectangle()).size() > 0) {
+        if (RobotServer.getField().checkIfBoilerInRange(this.getRectangle())) {
             this.setVelocity(0);
         }
      }
