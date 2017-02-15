@@ -71,7 +71,7 @@ public class Field extends JPanel {
         ArrayList<Ball> detectedBalls = new ArrayList<>();
 
         for (Ball ball : this.balls) {
-            if (rectangle.intersects(ball.getRectangle())) {
+            if (rectangle.intersects(ball.getDetectionBox())) {
                 detectedBalls.add(ball);
             }
         }
