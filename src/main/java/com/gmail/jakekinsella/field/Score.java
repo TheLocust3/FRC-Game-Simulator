@@ -11,28 +11,55 @@ import java.awt.*;
  */
 public class Score implements Paintable {
 
+    private final int ROTOR3 = 1;
+    private final int ROTOR4 = 2;
+    private final int LINE_SPACING = 20;
+    private final int SCORE_Y = 15;
+
     private int score;
+    private double pressure;
+    private int gears;
     private RobotAllianceColor robotAllianceColor;
+    private boolean teleop = false;
 
     public Score(RobotAllianceColor robotAllianceColor) {
         this.robotAllianceColor = robotAllianceColor;
         this.score = 0;
+        this.pressure = 0;
+        this.gears = 0;
     }
 
     public int getScore() {
         return this.score;
     }
 
+    public void switchScoringToTeleop() {
+        this.teleop = true;
+    }
+
     public void scoreHighgoal() {
-        this.score += 5;
+        if (this.teleop) {
+            this.pressure += 1.0 / 3.0;
+        } else {
+            this.pressure += 1.0;
+        }
+
+        this.updateScores();
     }
 
     public void scoreLowgoal() {
-        this.score += 2;
+        if (this.teleop) {
+            this.pressure += 1.0 / 9.0;
+        } else {
+            this.pressure += 1.0 / 3.0;
+        }
+
+        this.updateScores();
     }
 
-    public void scoreDefenseCross() {
-        this.score += 5;
+    public void placeGear() {
+        this.gears++;
+        this.updateScores();
     }
 
     public JSONObject toJSONObject() {
@@ -45,11 +72,41 @@ public class Score implements Paintable {
 
     @Override
     public void paint(Graphics graphics, Graphics2D graphics2D) {
-        graphics.setFont(new Font("Arial", Font.PLAIN, 24));
+        graphics.setColor(Color.BLACK);
+        graphics.setFont(new Font("Arial", Font.BOLD, 16));
+
+        int x = 0;
         if (this.robotAllianceColor == RobotAllianceColor.BLUE) {
-            graphics.drawString("Blue: " + this.getScore(), 0, 20);
+            x = Field.getBackgroundImageWidth() - 250;
+            graphics.drawString("Blue", x, this.SCORE_Y);
         } else {
-            graphics.drawString("Red: " + this.getScore(), Field.getBackgroundImageWidth() - 100, 20);
+            graphics.drawString("Red", x, this.SCORE_Y);
         }
+
+        graphics.drawString("Score: " + this.getScore(), x + this.LINE_SPACING * 2, this.SCORE_Y);
+        graphics.drawString("kPa: " + (int) this.pressure, x + this.LINE_SPACING * 6, this.SCORE_Y);
+        graphics.drawString("Gears: " + this.gears, x + this.LINE_SPACING * 9, this.SCORE_Y);
+    }
+
+    private void updateScores() {
+        // This is not very clean
+        int gearScore = 0;
+        if (this.gears - 1 >= 0) {
+            gearScore += 60;
+        }
+
+        if (this.gears - 3 >= 0) {
+            gearScore += 60;
+        }
+
+        if (this.gears - (7 - this.ROTOR3) >= 0) {
+            gearScore += 60;
+        }
+
+        if (this.gears - (13 - this.ROTOR3 - this.ROTOR4) >= 0) {
+            gearScore += 60;
+        }
+
+        this.score = (int) this.pressure + gearScore;
     }
 }

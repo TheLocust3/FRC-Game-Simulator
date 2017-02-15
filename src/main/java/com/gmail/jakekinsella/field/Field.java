@@ -116,9 +116,6 @@ public class Field extends JPanel {
 
         graphics.drawImage(this.backgroundImage, 0, 0, backgroundImageWidth, backgroundImageHeight, this);
 
-        blueAlliance.paint(graphics, (Graphics2D) graphics2D.create());
-        redAlliance.paint(graphics, (Graphics2D) graphics2D.create());
-
         for (Ball ball : this.balls) {
             ball.paint(graphics, (Graphics2D) graphics2D.create());
         }
@@ -138,6 +135,9 @@ public class Field extends JPanel {
         for (Hopper hopper : this.hoppers) {
             hopper.paint(graphics, graphics2D);
         }
+
+        blueAlliance.paint(graphics, (Graphics2D) graphics2D.create());
+        redAlliance.paint(graphics, (Graphics2D) graphics2D.create());
 
         graphics2D.drawString(Integer.toString(this.fps), backgroundImageWidth - 40, backgroundImageHeight - 25);
     }

@@ -102,6 +102,8 @@ public class RobotAlliance implements Paintable {
         for (Robot robot : this.robots) {
             robot.startTeleop();
         }
+
+        this.score.placeGear(); // Place the free gear
     }
 
     public void sendMapUpdate(JSONObject map) {
@@ -132,6 +134,6 @@ public class RobotAlliance implements Paintable {
             airshipStation.paint(graphics, graphics2D);
         }
 
-        score.paint(graphics, graphics2D);
+        this.score.paint(graphics, graphics2D);
     }
 }
