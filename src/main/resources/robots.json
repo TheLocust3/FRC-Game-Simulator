@@ -4,18 +4,24 @@
     "startY": 100,
     "width": 40,
     "height": 50,
+
     "pickupGearSide": "FRONT",
     "highgoalSide": "BACK",
     "lowgoalSide": "FRONT",
+
     "pickupGearRange": 20,
     "highgoalRange": 100,
     "lowgoalRange": 20,
+
     "pickupGearChance": 0.7,
     "highgoalChance": 0.5,
     "lowgoalChance": 0.8,
+
     "pickupGearTime": 5000,
+    "placeGearTime": 5000,
     "highgoalTime": 5000,
     "lowgoalTime": 5000,
+
     "degreePerMillisecond": 0.01,
     "maxVelocity": 100.0
   }

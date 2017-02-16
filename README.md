@@ -8,9 +8,7 @@ As you can see, many pieces that are often considered an integral part of FRC ha
   
 ### To-Do  
  - Update for the 2017 game, Steamworks (List in order of priority)
-   - Place gear on Airship
    - Climb
-   - Load gear from Human Player Station
    - Load balls from Human Player Station
    - Highgoal on the Boiler
    - Lowgoal on the Boiler

@@ -7,6 +7,7 @@ public enum ClientCommand {
     MOVE,
     TURN,
     SHOOT,
+    PLACE_GEAR,
     PICKUP_GEAR_STATION,
     LOWGOAL,
     DEFENSE

@@ -38,7 +38,7 @@ public class Robot implements Paintable {
 
     private int pickupGearRange, highgoalRange, lowgoalRange;
     private double pickupGearChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupGearTime, highgoalTime, lowgoalTime;
+    private int pickupGearTime, placeGearTime, highgoalTime, lowgoalTime;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
@@ -160,6 +160,10 @@ public class Robot implements Paintable {
         return RobotServer.getField().checkIfStationInRange(this.getGearDetectionBox());
     }
 
+    public boolean isInRangeOfAirshipStation() {
+        return RobotServer.getField().checkIfAirshipStationInRange(this.getGearDetectionBox());
+    }
+
     public boolean isInRangeOfHighGoal() {
         return RobotServer.getField().checkIfBoilerInRange(this.getHighGoalDetectionBox());
     }
@@ -261,6 +265,10 @@ public class Robot implements Paintable {
                 logger.info(this.getRobotName() + " has changed velocity");
                 this.currentAction = new MovementAction(commandInfo, this, this.maxVelocity);
                 break;
+            case PLACE_GEAR:
+                logger.info(this.getRobotName() + " has started to place a gear");
+                this.currentAction = new PlaceGearAction(commandInfo, this, this.placeGearTime);
+                break;
             case PICKUP_GEAR_STATION:
                 logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
                 this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance);
@@ -300,6 +308,8 @@ public class Robot implements Paintable {
                 // TODO: Drop ball near the tower
             } else if (this.currentAction.toString().equals("LOWGOAL")) {
                 // TODO: Drop ball near the tower
+            } else if (this.currentAction.toString().equals("PLACE_GEAR")) {
+                this.gear = null;
             }
         }
 
@@ -410,6 +420,7 @@ public class Robot implements Paintable {
         this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
 
         this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
+        this.placeGearTime = ((Long) jsonRobot.get("placeGearTime")).intValue();
         this.highgoalTime = ((Long) jsonRobot.get("highgoalTime")).intValue();
         this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
 

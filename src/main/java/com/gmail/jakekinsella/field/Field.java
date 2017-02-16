@@ -111,6 +111,22 @@ public class Field extends JPanel {
         return false;
     }
 
+    public boolean checkIfAirshipStationInRange(Shape rectangle) {
+        for (AirshipStation airshipStation : this.blueAlliance.getAirshipStations()) {
+            if (rectangle.intersects(airshipStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        for (AirshipStation airshipStation : this.redAlliance.getAirshipStations()) {
+            if (rectangle.intersects(airshipStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public boolean checkIfStationInRange(Shape rectangle) {
         // TODO: Check if the robot is at the right one
 
