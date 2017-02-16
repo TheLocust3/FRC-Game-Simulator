@@ -4,6 +4,7 @@ import com.gmail.jakekinsella.JSONFileReader;
 import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.Ball;
+import com.gmail.jakekinsella.field.Gear;
 import com.gmail.jakekinsella.robotactions.*;
 import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
@@ -34,13 +35,14 @@ public class Robot implements Paintable {
     private double angle;
     private double velocity; // in pixels per second
     private String robotName;
-    private int pickupRange, highgoalRange, lowgoalRange;
-    private double pickupChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupTime, highgoalTime, lowgoalTime;
+
+    private int pickupGearRange, highgoalRange, lowgoalRange;
+    private double pickupGearChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
+    private int pickupGearTime, highgoalTime, lowgoalTime;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
-    private RobotSide pickupSide;
+    private RobotSide pickupGearSide;
     private RobotSide highgoalSide;
     private RobotSide lowgoalSide;
     private Socket robotSocket;
@@ -49,7 +51,8 @@ public class Robot implements Paintable {
     private RobotAlliance robotAlliance;
     private JSONFileReader jsonFileReader;
     private Action currentAction = new NoneAction();
-    private Ball ball;
+    private ArrayList<Ball> balls;
+    private Gear gear;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -81,11 +84,6 @@ public class Robot implements Paintable {
 
     public void setX(int x) {
         this.rectangle.setRect(x, this.getY(), this.width, this.height);
-
-        if (this.ball != null) {
-            this.ball.setX(this.getCenterX());
-            this.ball.setY(this.getCenterY());
-        }
     }
 
     public int getY() {
@@ -124,8 +122,12 @@ public class Robot implements Paintable {
         return this.height;
     }
 
-    public Ball getBall() {
-        return this.ball;
+    public ArrayList<Ball> getBalls() {
+        return this.balls;
+    }
+
+    public Gear getGear() {
+        return this.gear;
     }
 
     public RobotAlliance getRobotAlliance() {
@@ -154,6 +156,18 @@ public class Robot implements Paintable {
         return false;
     }
 
+    public boolean isReadyToReceiveGearFromStation() {
+        return RobotServer.getField().checkIfStationInRange(this.getGearDetectionBox());
+    }
+
+    public boolean isInRangeOfHighGoal() {
+        return RobotServer.getField().checkIfBoilerInRange(this.getHighGoalDetectionBox());
+    }
+
+    public boolean isInRangeOfLowGoal() {
+        return RobotServer.getField().checkIfBoilerInRange(this.getLowGoalDetectionBox());
+    }
+
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         obj.put("name", this.robotName);
@@ -168,38 +182,7 @@ public class Robot implements Paintable {
     }
 
     public ArrayList<Ball> getBallsInFrontOf(RobotSide robotSide) {
-        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.pickupRange));
-    }
-
-    public Shape createDetectionRect(RobotSide robotSide, int range) {
-        int rectWidth = this.width, rectHeight = range, offset = 0;
-        double rectAngle = 0;
-
-        switch (robotSide) {
-            case FRONT:
-                rectAngle = this.getAngle() - 180;
-                break;
-            case BACK:
-                rectAngle = this.getAngle();
-                break;
-            case LEFT:
-                rectWidth = this.height;
-                rectAngle = this.getAngle() - 270;
-                offset = -Math.abs(this.height - this.width) + 5; // This 5 is a tuned value. Idk why it is needed
-                break;
-            case RIGHT:
-                rectWidth = this.height;
-                rectAngle = this.getAngle() - 90;
-                offset = -Math.abs(this.height - this.width) + 5;
-                break;
-        }
-
-        int rectX = this.getCenterX() - (rectWidth / 2);
-        int rectY = this.getCenterY() + (this.height / 2) + offset;
-
-        Rectangle2D.Double rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
-        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
-        return at.createTransformedShape(rect);
+        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.pickupGearRange));
     }
 
     public void shutdownRobot() throws IOException {
@@ -278,9 +261,9 @@ public class Robot implements Paintable {
                 logger.info(this.getRobotName() + " has changed velocity");
                 this.currentAction = new MovementAction(commandInfo, this, this.maxVelocity);
                 break;
-            case PICKUP:
-                logger.info(this.getRobotName() + " has started to pickup a ball");
-                this.currentAction = new PickupAction(commandInfo, this, this.pickupTime, this.pickupChance, this.pickupSide);
+            case PICKUP_GEAR_STATION:
+                logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
+                this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance, this.pickupGearSide);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
@@ -308,11 +291,11 @@ public class Robot implements Paintable {
 
     public void actionFinish() {
         if (this.currentAction.getSuccess()) {
-            if (this.currentAction.toString().equals("PICKUP")) {
-                this.ball = ((PickupAction) this.currentAction).getBall();
+            if (this.currentAction.toString().equals("PICKUP_GEAR_STATION")) {
+                this.gear = ((PickupGearFromStationAction) this.currentAction).getGear();
 
-                this.ball.setX(this.getCenterX());
-                this.ball.setY(this.getCenterY());
+                this.gear.setX(this.getCenterX());
+                this.gear.setY(this.getCenterY());
             } else if (this.currentAction.toString().equals("SHOOT")) {
                 // TODO: Drop ball near the tower
             } else if (this.currentAction.toString().equals("LOWGOAL")) {
@@ -378,6 +361,8 @@ public class Robot implements Paintable {
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(this.getAngle()), this.getCenterX(), this.getCenterY());
         Shape shape = at.createTransformedShape(this.rectangle);
         graphics2D.fill(shape);
+
+        // TODO: Indicate how many balls the robot has
     }
 
     private void setup() {
@@ -395,6 +380,11 @@ public class Robot implements Paintable {
             logger.error("Error in setting up a robot", e);
         }
 
+        this.balls = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            this.balls.add(new Ball(0,0)); // Ball location is irrelevant
+        }
+
         getRobotProperties();
     }
 
@@ -407,19 +397,19 @@ public class Robot implements Paintable {
         this.height = ((Long) jsonRobot.get("height")).intValue();
         this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
 
-        this.pickupSide = RobotSide.valueOf((String) jsonRobot.get("pickupSide"));
+        this.pickupGearSide = RobotSide.valueOf((String) jsonRobot.get("pickupGearSide"));
         this.highgoalSide = RobotSide.valueOf((String) jsonRobot.get("highgoalSide"));
         this.lowgoalSide = RobotSide.valueOf((String) jsonRobot.get("lowgoalSide"));
 
-        this.pickupRange = ((Long) jsonRobot.get("pickupRange")).intValue();
+        this.pickupGearRange = ((Long) jsonRobot.get("pickupGearRange")).intValue();
         this.highgoalRange = ((Long) jsonRobot.get("highgoalRange")).intValue();
         this.lowgoalRange = ((Long) jsonRobot.get("lowgoalRange")).intValue();
 
-        this.pickupChance = (Double) jsonRobot.get("pickupChance");
+        this.pickupGearChance = (Double) jsonRobot.get("pickupGearChance");
         this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
         this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
 
-        this.pickupTime = ((Long) jsonRobot.get("pickupTime")).intValue();
+        this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
         this.highgoalTime = ((Long) jsonRobot.get("highgoalTime")).intValue();
         this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
 
@@ -434,5 +424,48 @@ public class Robot implements Paintable {
             this.setX((int) (Main.FRAME_WIDTH - (1.5 * this.getHeight()))); // TODO: figure out why the heck this is 1.5
             this.setAngle(270);
         }
+    }
+
+    private Shape getGearDetectionBox() {
+        return this.createDetectionRect(this.pickupGearSide, this.pickupGearRange);
+    }
+
+    private Shape getHighGoalDetectionBox() {
+        return this.createDetectionRect(this.highgoalSide, this.highgoalRange);
+    }
+
+    private Shape getLowGoalDetectionBox() {
+        return this.createDetectionRect(this.lowgoalSide, this.lowgoalRange);
+    }
+
+    private Shape createDetectionRect(RobotSide robotSide, int range) {
+        int rectWidth = this.width, rectHeight = range, offset = 0;
+        double rectAngle = 0;
+
+        switch (robotSide) {
+            case FRONT:
+                rectAngle = this.getAngle() - 180;
+                break;
+            case BACK:
+                rectAngle = this.getAngle();
+                break;
+            case LEFT:
+                rectWidth = this.height;
+                rectAngle = this.getAngle() - 270;
+                offset = -Math.abs(this.height - this.width) + 5; // This 5 is a tuned value. Idk why it is needed
+                break;
+            case RIGHT:
+                rectWidth = this.height;
+                rectAngle = this.getAngle() - 90;
+                offset = -Math.abs(this.height - this.width) + 5;
+                break;
+        }
+
+        int rectX = this.getCenterX() - (rectWidth / 2);
+        int rectY = this.getCenterY() + (this.height / 2) + offset;
+
+        Rectangle2D.Double rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
+        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
+        return at.createTransformedShape(rect);
     }
 }

@@ -111,6 +111,24 @@ public class Field extends JPanel {
         return false;
     }
 
+    public boolean checkIfStationInRange(Shape rectangle) {
+        // TODO: Check if the robot is at the right one
+
+        for (LoadingStation loadingStation : this.blueAlliance.getLoadingStations()) {
+            if (rectangle.intersects(loadingStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        for (LoadingStation loadingStation : this.redAlliance.getLoadingStations()) {
+            if (rectangle.intersects(loadingStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
