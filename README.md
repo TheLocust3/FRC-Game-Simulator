@@ -12,11 +12,11 @@ As you can see, many pieces that are often considered an integral part of FRC ha
    - Intake balls from the ground
    - Empty Hopper
    - Intake gears from the ground
+ - Refactor everything
  - Simulate human player action
  - Create a wiki documenting how to actually write code for this simulator
  - Unit testing
 
 ### Bugs
  - Cannot move in amounts smaller than about 100 px/s
- - Can change action during defense cross and get stuck in the defense
  - Simulator stalls if the wrong type is sent over the socket
