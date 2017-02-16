@@ -36,15 +36,13 @@ public class Robot implements Paintable {
     private double velocity; // in pixels per second
     private String robotName;
 
-    private int pickupGearRange, highgoalRange, lowgoalRange;
-    private double pickupGearChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupGearTime, placeGearTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
+    private int pickupGearRange, pickupBallsRange, highgoalRange, lowgoalRange;
+    private double pickupGearChance, pickupBallsChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
+    private int pickupGearTime, placeGearTime, pickupBallsTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
-    private RobotSide pickupGearSide;
-    private RobotSide highgoalSide;
-    private RobotSide lowgoalSide;
+    private RobotSide pickupGearSide, pickupBallsSide, highgoalSide, lowgoalSide;
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
@@ -160,6 +158,10 @@ public class Robot implements Paintable {
         return RobotServer.getField().checkIfStationInRange(this.getGearDetectionBox());
     }
 
+    public boolean isReadyToReceiveBallsFromStation() {
+        return RobotServer.getField().checkIfStationInRange(this.getBallsDetectionBox());
+    }
+
     public boolean isInRangeOfAirshipStation() {
         return RobotServer.getField().checkIfAirshipStationInRange(this.getGearDetectionBox());
     }
@@ -272,6 +274,10 @@ public class Robot implements Paintable {
             case PICKUP_GEAR_STATION:
                 logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
                 this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance);
+                break;
+            case PICKUP_BALL_STATION:
+                logger.info(this.getRobotName() + " has started to pickup balls from the human player station");
+                this.currentAction = new PickupBallFromStationAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
@@ -410,19 +416,23 @@ public class Robot implements Paintable {
         this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
 
         this.pickupGearSide = RobotSide.valueOf((String) jsonRobot.get("pickupGearSide"));
+        this.pickupBallsSide = RobotSide.valueOf((String) jsonRobot.get("pickupBallsSide"));
         this.highgoalSide = RobotSide.valueOf((String) jsonRobot.get("highgoalSide"));
         this.lowgoalSide = RobotSide.valueOf((String) jsonRobot.get("lowgoalSide"));
 
         this.pickupGearRange = ((Long) jsonRobot.get("pickupGearRange")).intValue();
+        this.pickupBallsRange = ((Long) jsonRobot.get("pickupBallsRange")).intValue();
         this.highgoalRange = ((Long) jsonRobot.get("highgoalRange")).intValue();
         this.lowgoalRange = ((Long) jsonRobot.get("lowgoalRange")).intValue();
 
         this.pickupGearChance = (Double) jsonRobot.get("pickupGearChance");
+        this.pickupBallsChance = (Double) jsonRobot.get("pickupBallsChance");
         this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
         this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
 
         this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
         this.placeGearTime = ((Long) jsonRobot.get("placeGearTime")).intValue();
+        this.pickupBallsTime = ((Long) jsonRobot.get("pickupBallsTime")).intValue();
 
         this.highgoalBallsPerSecond = ((Long) jsonRobot.get("highgoalBallsPerSecond")).intValue();
         this.lowgoalBallsPerSecond = ((Long) jsonRobot.get("lowgoalBallsPerSecond")).intValue();
@@ -442,6 +452,10 @@ public class Robot implements Paintable {
 
     private Shape getGearDetectionBox() {
         return this.createDetectionRect(this.pickupGearSide, this.pickupGearRange);
+    }
+
+    private Shape getBallsDetectionBox() {
+        return this.createDetectionRect(this.pickupBallsSide, this.pickupBallsRange);
     }
 
     private Shape getHighGoalDetectionBox() {
