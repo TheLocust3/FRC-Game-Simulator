@@ -1,8 +1,6 @@
 package com.gmail.jakekinsella.robotactions;
 
 import com.gmail.jakekinsella.robot.Robot;
-import com.gmail.jakekinsella.robot.RobotServer;
-import com.gmail.jakekinsella.robot.RobotSide;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,29 +10,39 @@ import org.apache.logging.log4j.Logger;
  */
 public class ShootAction extends TimeAction {
 
-    private double successChance;
+    private double accuracy;
+    private int ballsPerSecond;
+    private int ballsScored;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public ShootAction(Command command, Robot robot, int time, double successChance) {
-        super(command, robot, time);
+    public ShootAction(Command command, Robot robot, int ballsPerSecond, double accuracy) {
+        super(command, robot, 0);
 
-        this.successChance = successChance;
+        this.ballsPerSecond = ballsPerSecond;
+        this.accuracy = accuracy;
+    }
+
+    public int getBallsScored() {
+        return this.ballsScored;
     }
 
     @Override
     public void actionDone() {
-        boolean score = (Math.random() >= (1 - this.successChance));
+        // TODO: Currently scores all balls at the end of the action and not throughout it
 
-        if (score) {
-            logger.info(this.robot.getRobotName() + " has shot a ball and scored in the highgoal");
-        } else {
-            logger.info(this.robot.getRobotName() + " has shot a ball and missed the highgoal");
+        for (int i = 0; i < this.robot.getBalls().size(); i++) {
+            boolean score = (Math.random() >= (1 - this.accuracy));
+            if (score) {
+                this.ballsScored++;
+                this.robot.getRobotAlliance().getScore().scoreHighgoal();
+            }
         }
 
-        this.success = score;
+        logger.info(this.robot.getRobotName() + " has shot " + this.getBallsScored() + " balls into the highgoal");
 
-        this.robot.getRobotAlliance().getScore().scoreHighgoal(); // This flipping line...
+        this.success = true;
+
         this.robot.sendActionResponse();
         this.robot.actionFinish();
     }
@@ -52,5 +60,7 @@ public class ShootAction extends TimeAction {
             this.robot.actionFinish();
             this.robot.sendActionResponse();
         }
+
+        this.remainingTime = this.robot.getBalls().size() / this.ballsPerSecond;
     }
 }

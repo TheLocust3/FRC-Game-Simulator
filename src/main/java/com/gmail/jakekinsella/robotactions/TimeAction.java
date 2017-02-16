@@ -8,7 +8,7 @@ import com.gmail.jakekinsella.socketcommands.Command;
  */
 public class TimeAction extends Action {
 
-    private long remainingTime;
+    protected long remainingTime;
     private long lastTick;
     private int i = 0;
 

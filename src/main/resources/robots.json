@@ -19,8 +19,9 @@
 
     "pickupGearTime": 5000,
     "placeGearTime": 5000,
-    "highgoalTime": 5000,
-    "lowgoalTime": 5000,
+
+    "highgoalBallsPerSecond": 10,
+    "lowgoalBallsPerSecond": 5000,
 
     "degreePerMillisecond": 0.01,
     "maxVelocity": 100.0

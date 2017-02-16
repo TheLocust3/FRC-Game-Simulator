@@ -12,29 +12,39 @@ import org.apache.logging.log4j.Logger;
  */
 public class LowgoalAction extends TimeAction {
 
-    private double successChance;
+    private double accuracy;
+    private int ballsPerSecond;
+    private int ballsScored;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public LowgoalAction(Command command, Robot robot, int time, double successChance) {
+    public LowgoalAction(Command command, Robot robot, int time, int ballsPerSecond, double accuracy) {
         super(command, robot, time);
 
-        this.successChance = successChance;
+        this.ballsPerSecond = ballsPerSecond;
+        this.accuracy = accuracy;
+    }
+
+    public int getBallsScored() {
+        return this.ballsScored;
     }
 
     @Override
     public void actionDone() {
-        boolean score = (Math.random() >= (1 - this.successChance));
+        // TODO: Currently scores all balls at the end of the action and not throughout it
 
-        if (score) {
-            logger.info(this.robot.getRobotName() + " has shot a ball and scored in the lowgoal");
-        } else {
-            logger.info(this.robot.getRobotName() + " has shot a ball and missed the lowgoal");
+        for (int i = 0; i < this.robot.getBalls().size(); i++) {
+            boolean score = (Math.random() >= (1 - this.accuracy));
+            if (score) {
+                this.ballsScored++;
+                this.robot.getRobotAlliance().getScore().scoreLowgoal();
+            }
         }
 
-        this.success = score;
+        logger.info(this.robot.getRobotName() + " has shot " + this.getBallsScored() + " balls into the lowgoal");
 
-        this.robot.getRobotAlliance().getScore().scoreLowgoal(); // This flipping line...
+        this.success = true;
+
         this.robot.sendActionResponse();
         this.robot.actionFinish();
     }
@@ -52,5 +62,7 @@ public class LowgoalAction extends TimeAction {
             this.robot.actionFinish();
             this.robot.sendActionResponse();
         }
+
+        this.remainingTime = this.robot.getBalls().size() / this.ballsPerSecond;
     }
 }

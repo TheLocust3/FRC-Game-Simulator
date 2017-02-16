@@ -38,7 +38,7 @@ public class Robot implements Paintable {
 
     private int pickupGearRange, highgoalRange, lowgoalRange;
     private double pickupGearChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupGearTime, placeGearTime, highgoalTime, lowgoalTime;
+    private int pickupGearTime, placeGearTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
@@ -255,7 +255,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this, this.highgoalTime, this.highgoalChance);
+                this.currentAction = new ShootAction(commandInfo, this, this.highgoalBallsPerSecond, this.highgoalChance);
                 break;
             case TURN:
                 logger.info(this.getRobotName() + " has started to turn");
@@ -275,7 +275,7 @@ public class Robot implements Paintable {
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance);
+                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalBallsPerSecond, this.lowgoalBallsPerSecond, this.lowgoalChance);
                 break;
         }
     }
@@ -305,9 +305,11 @@ public class Robot implements Paintable {
                 this.gear.setX(this.getCenterX());
                 this.gear.setY(this.getCenterY());
             } else if (this.currentAction.toString().equals("SHOOT")) {
-                // TODO: Drop ball near the tower
+                this.balls = new ArrayList<>();
+                // TODO: Drop balls
             } else if (this.currentAction.toString().equals("LOWGOAL")) {
-                // TODO: Drop ball near the tower
+                this.balls = new ArrayList<>();
+                // TODO: Drop balls
             } else if (this.currentAction.toString().equals("PLACE_GEAR")) {
                 this.gear = null;
             }
@@ -421,8 +423,9 @@ public class Robot implements Paintable {
 
         this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
         this.placeGearTime = ((Long) jsonRobot.get("placeGearTime")).intValue();
-        this.highgoalTime = ((Long) jsonRobot.get("highgoalTime")).intValue();
-        this.lowgoalTime = ((Long) jsonRobot.get("lowgoalTime")).intValue();
+
+        this.highgoalBallsPerSecond = ((Long) jsonRobot.get("highgoalBallsPerSecond")).intValue();
+        this.lowgoalBallsPerSecond = ((Long) jsonRobot.get("lowgoalBallsPerSecond")).intValue();
 
         this.degreePerMillisecond = (Double) jsonRobot.get("degreePerMillisecond");
         this.maxVelocity = (Double) jsonRobot.get("maxVelocity");
