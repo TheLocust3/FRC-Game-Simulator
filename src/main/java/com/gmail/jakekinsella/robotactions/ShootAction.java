@@ -12,18 +12,14 @@ import org.apache.logging.log4j.Logger;
  */
 public class ShootAction extends TimeAction {
 
-    private RobotSide shootSide;
     private double successChance;
-    private int range;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public ShootAction(Command command, Robot robot, int time, double successChance, RobotSide shootSide, int range) {
+    public ShootAction(Command command, Robot robot, int time, double successChance) {
         super(command, robot, time);
 
-        this.shootSide = shootSide;
         this.successChance = successChance;
-        this.range = range;
     }
 
     @Override

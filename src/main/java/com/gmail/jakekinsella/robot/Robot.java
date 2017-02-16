@@ -251,7 +251,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this, this.highgoalTime, this.highgoalChance, this.highgoalSide, this.highgoalRange);
+                this.currentAction = new ShootAction(commandInfo, this, this.highgoalTime, this.highgoalChance);
                 break;
             case TURN:
                 logger.info(this.getRobotName() + " has started to turn");
@@ -263,11 +263,11 @@ public class Robot implements Paintable {
                 break;
             case PICKUP_GEAR_STATION:
                 logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
-                this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance, this.pickupGearSide);
+                this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance, this.lowgoalSide, this.lowgoalRange);
+                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalTime, this.lowgoalChance);
                 break;
         }
     }

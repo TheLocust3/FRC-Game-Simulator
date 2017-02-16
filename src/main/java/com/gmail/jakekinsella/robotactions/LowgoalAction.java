@@ -12,17 +12,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class LowgoalAction extends TimeAction {
 
-    private RobotSide pickupSide;
     private double successChance;
-    private int range;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public LowgoalAction(Command command, Robot robot, int time, double successChance, RobotSide pickupSide, int range) {
+    public LowgoalAction(Command command, Robot robot, int time, double successChance) {
         super(command, robot, time);
 
-        this.pickupSide = pickupSide; // Assumes the robot shoots lowgoals on the same side as pickup
-        this.range = range;
         this.successChance = successChance;
     }
 

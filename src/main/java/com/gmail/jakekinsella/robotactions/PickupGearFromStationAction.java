@@ -18,15 +18,13 @@ public class PickupGearFromStationAction extends TimeAction {
 
     private double successChance;
 
-    private RobotSide pickupSide;
     private Gear gear;
 
     private static final Logger logger = LogManager.getLogger();
 
-    public PickupGearFromStationAction(Command command, Robot robot, int time, double successChance, RobotSide pickupSide) {
+    public PickupGearFromStationAction(Command command, Robot robot, int time, double successChance) {
         super(command, robot, time);
 
-        this.pickupSide = pickupSide;
         this.successChance = successChance;
     }
 
