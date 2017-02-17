@@ -19,6 +19,7 @@ public class Score implements Paintable {
     private int score;
     private double pressure;
     private int gears;
+    private int climbs;
     private RobotAllianceColor robotAllianceColor;
     private boolean teleop = false;
 
@@ -27,6 +28,7 @@ public class Score implements Paintable {
         this.score = 0;
         this.pressure = 0;
         this.gears = 0;
+        this.climbs = 0;
     }
 
     public int getScore() {
@@ -59,6 +61,11 @@ public class Score implements Paintable {
 
     public void placeGear() {
         this.gears++;
+        this.updateScores();
+    }
+
+    public void climb() {
+        this.climbs++;
         this.updateScores();
     }
 
@@ -107,6 +114,6 @@ public class Score implements Paintable {
             gearScore += 60;
         }
 
-        this.score = (int) this.pressure + gearScore;
+        this.score = (int) this.pressure + gearScore + (this.climbs * 50);
     }
 }

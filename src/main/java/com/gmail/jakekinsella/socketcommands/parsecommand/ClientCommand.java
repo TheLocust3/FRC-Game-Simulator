@@ -12,5 +12,5 @@ public enum ClientCommand {
     PICKUP_BALLS_STATION,
     PICKUP_BALLS_HOPPER,
     LOWGOAL,
-    DEFENSE
+    CLIMB
 }

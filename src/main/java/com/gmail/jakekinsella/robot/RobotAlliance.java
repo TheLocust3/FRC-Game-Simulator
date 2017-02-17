@@ -69,6 +69,10 @@ public class RobotAlliance implements Paintable {
         return this.airshipStations;
     }
 
+    public ArrayList<RopeStation> getRopeStations() {
+        return this.ropeStations;
+    }
+
     public void addRobot(Robot robot) {
         this.robots.add(robot);
     }

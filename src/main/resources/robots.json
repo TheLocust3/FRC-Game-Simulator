@@ -7,21 +7,25 @@
 
     "pickupGearSide": "FRONT",
     "pickupBallsSide": "FRONT",
+    "climbSide": "FRONT",
     "highgoalSide": "BACK",
     "lowgoalSide": "FRONT",
 
     "pickupGearRange": 20,
     "pickupBallsRange": 20,
+    "climbRange": 10,
     "highgoalRange": 100,
     "lowgoalRange": 20,
 
     "pickupGearChance": 0.7,
     "pickupBallsChance": 0.7,
+    "climbChance": 0.9,
     "highgoalChance": 0.5,
     "lowgoalChance": 0.8,
 
     "pickupGearTime": 5000,
     "placeGearTime": 5000,
+    "climbTime": 5000,
     "pickupBallsTime": 5000,
 
     "highgoalBallsPerSecond": 10,

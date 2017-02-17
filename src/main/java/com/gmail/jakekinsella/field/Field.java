@@ -127,6 +127,22 @@ public class Field extends JPanel {
         return false;
     }
 
+    public boolean checkIfRopeStationInRange(Shape rectangle) {
+        for (RopeStation ropeStation : this.blueAlliance.getRopeStations()) {
+            if (rectangle.intersects(ropeStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        for (RopeStation ropeStation : this.redAlliance.getRopeStations()) {
+            if (rectangle.intersects(ropeStation.getDetectionBox())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public boolean checkIfStationInRange(Shape rectangle) {
         // TODO: Check if the robot is at the right one
 

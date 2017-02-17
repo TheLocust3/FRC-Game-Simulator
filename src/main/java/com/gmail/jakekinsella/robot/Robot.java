@@ -36,13 +36,13 @@ public class Robot implements Paintable {
     private double velocity; // in pixels per second
     private String robotName;
 
-    private int pickupGearRange, pickupBallsRange, highgoalRange, lowgoalRange;
-    private double pickupGearChance, pickupBallsChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupGearTime, placeGearTime, pickupBallsTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
+    private int pickupGearRange, pickupBallsRange, climbRange, highgoalRange, lowgoalRange;
+    private double pickupGearChance, pickupBallsChance, climbChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
+    private int pickupGearTime, placeGearTime, climbTime, pickupBallsTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
-    private RobotSide pickupGearSide, pickupBallsSide, highgoalSide, lowgoalSide;
+    private RobotSide pickupGearSide, pickupBallsSide, climbSide, highgoalSide, lowgoalSide;
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
     private RobotAllianceColor color;
@@ -170,6 +170,10 @@ public class Robot implements Paintable {
         return RobotServer.getField().checkIfAirshipStationInRange(this.getGearDetectionBox());
     }
 
+    public boolean isInRangeOfRopeStation() {
+        return RobotServer.getField().checkIfRopeStationInRange(this.getClimbDetectionBox());
+    }
+
     public boolean isInRangeOfHighGoal() {
         return RobotServer.getField().checkIfBoilerInRange(this.getHighGoalDetectionBox());
     }
@@ -291,6 +295,9 @@ public class Robot implements Paintable {
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
                 this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalBallsPerSecond, this.lowgoalBallsPerSecond, this.lowgoalChance);
                 break;
+            case CLIMB:
+                logger.info(this.getRobotName() + " has started to climb");
+                this.currentAction = new ClimbAction(commandInfo, this, this.climbTime, this.climbChance);
         }
     }
 
@@ -419,6 +426,7 @@ public class Robot implements Paintable {
     }
 
     private void getRobotProperties() {
+        // This method is a monstrosity
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
 
         this.color = RobotAllianceColor.valueOf((String) jsonRobot.get("allianceColor"));
@@ -429,21 +437,25 @@ public class Robot implements Paintable {
 
         this.pickupGearSide = RobotSide.valueOf((String) jsonRobot.get("pickupGearSide"));
         this.pickupBallsSide = RobotSide.valueOf((String) jsonRobot.get("pickupBallsSide"));
+        this.climbSide = RobotSide.valueOf((String) jsonRobot.get("climbSide"));
         this.highgoalSide = RobotSide.valueOf((String) jsonRobot.get("highgoalSide"));
         this.lowgoalSide = RobotSide.valueOf((String) jsonRobot.get("lowgoalSide"));
 
         this.pickupGearRange = ((Long) jsonRobot.get("pickupGearRange")).intValue();
         this.pickupBallsRange = ((Long) jsonRobot.get("pickupBallsRange")).intValue();
+        this.climbRange = ((Long) jsonRobot.get("climbRange")).intValue();
         this.highgoalRange = ((Long) jsonRobot.get("highgoalRange")).intValue();
         this.lowgoalRange = ((Long) jsonRobot.get("lowgoalRange")).intValue();
 
         this.pickupGearChance = (Double) jsonRobot.get("pickupGearChance");
         this.pickupBallsChance = (Double) jsonRobot.get("pickupBallsChance");
+        this.climbChance = (Double) jsonRobot.get("climbChance");
         this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
         this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
 
         this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
         this.placeGearTime = ((Long) jsonRobot.get("placeGearTime")).intValue();
+        this.climbTime = ((Long) jsonRobot.get("climbTime")).intValue();
         this.pickupBallsTime = ((Long) jsonRobot.get("pickupBallsTime")).intValue();
 
         this.highgoalBallsPerSecond = ((Long) jsonRobot.get("highgoalBallsPerSecond")).intValue();
@@ -464,6 +476,10 @@ public class Robot implements Paintable {
 
     private Shape getGearDetectionBox() {
         return this.createDetectionRect(this.pickupGearSide, this.pickupGearRange);
+    }
+
+    private Shape getClimbDetectionBox() {
+        return this.createDetectionRect(this.climbSide, this.climbRange);
     }
 
     private Shape getBallsDetectionBox() {
