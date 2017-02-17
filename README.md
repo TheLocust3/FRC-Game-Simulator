@@ -10,12 +10,11 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Update for the 2017 game, Steamworks (List in order of priority)
    - Climb
    - Intake balls from the ground
-   - Empty Hopper
    - Intake gears from the ground
+ - Unit testing
  - Refactor everything
  - Simulate human player action
  - Create a wiki documenting how to actually write code for this simulator
- - Unit testing
 
 ### Bugs
  - Cannot move in amounts smaller than about 100 px/s

@@ -145,6 +145,18 @@ public class Field extends JPanel {
         return false;
     }
 
+    public boolean checkIfNonEmptyHopperInRange(Shape rectangle) {
+        for (Hopper hopper : this.hoppers) {
+            if (hopper.isEmpty()) {
+                if (rectangle.intersects(hopper.getDetectionBox())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 

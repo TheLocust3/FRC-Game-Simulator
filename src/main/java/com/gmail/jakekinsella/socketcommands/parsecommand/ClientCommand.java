@@ -9,7 +9,8 @@ public enum ClientCommand {
     SHOOT,
     PLACE_GEAR,
     PICKUP_GEAR_STATION,
-    PICKUP_BALL_STATION,
+    PICKUP_BALLS_STATION,
+    PICKUP_BALLS_HOPPER,
     LOWGOAL,
     DEFENSE
 }

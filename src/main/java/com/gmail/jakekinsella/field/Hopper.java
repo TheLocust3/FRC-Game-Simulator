@@ -7,6 +7,8 @@ import com.gmail.jakekinsella.robot.RobotAllianceColor;
  */
 public class Hopper extends FieldElement {
 
+    private boolean empty = false;
+
     public Hopper(int position) {
         super(0, 0, 30, 9, 0, 0, RobotAllianceColor.NONE);
 
@@ -14,6 +16,14 @@ public class Hopper extends FieldElement {
         this.x = point[0];
         this.y = point[1];
         this.updateRectangles();
+    }
+
+    public void emptyHopper() {
+        this.empty = true;
+    }
+
+    public boolean isEmpty() {
+        return this.empty;
     }
 
     private int[] positionToPoint(int position) {

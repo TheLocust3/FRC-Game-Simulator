@@ -59,6 +59,11 @@ public class PickupGearFromStationAction extends TimeAction {
             logger.info(this.robot.getRobotName() + " already has a gear!");
             this.robot.actionFinish();
             this.robot.sendActionResponse();
+        } else if (!this.robot.isReadyToReceiveGearFromStation()) {
+            success = false;
+            logger.info(this.robot.getRobotName() + " isn't in range of a human player station");
+            this.robot.actionFinish();
+            this.robot.sendActionResponse();
         }
     }
 

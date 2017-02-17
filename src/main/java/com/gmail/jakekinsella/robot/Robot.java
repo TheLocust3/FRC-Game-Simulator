@@ -162,6 +162,10 @@ public class Robot implements Paintable {
         return RobotServer.getField().checkIfStationInRange(this.getBallsDetectionBox());
     }
 
+    public boolean isReadyToReceiveBallsFromHopper() {
+        return RobotServer.getField().checkIfNonEmptyHopperInRange(this.getBallsDetectionBox());
+    }
+
     public boolean isInRangeOfAirshipStation() {
         return RobotServer.getField().checkIfAirshipStationInRange(this.getGearDetectionBox());
     }
@@ -275,9 +279,13 @@ public class Robot implements Paintable {
                 logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
                 this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance);
                 break;
-            case PICKUP_BALL_STATION:
+            case PICKUP_BALLS_STATION:
                 logger.info(this.getRobotName() + " has started to pickup balls from the human player station");
-                this.currentAction = new PickupBallFromStationAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
+                this.currentAction = new PickupBallsFromStationAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
+                break;
+            case PICKUP_BALLS_HOPPER:
+                logger.info(this.getRobotName() + " has started to pickup balls from a hopper");
+                this.currentAction = new PickupBallsFromHopperAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
@@ -310,6 +318,10 @@ public class Robot implements Paintable {
 
                 this.gear.setX(this.getCenterX());
                 this.gear.setY(this.getCenterY());
+            } else if (this.currentAction.toString().equals("PICKUP_BALLS_STATION")) {
+                this.balls.addAll(((PickupBallsFromStationAction) this.currentAction).getBalls());
+            } else if (this.currentAction.toString().equals("PICKUP_BALLS_HOPPER")) {
+                this.balls.addAll(((PickupBallsFromHopperAction) this.currentAction).getBalls());
             } else if (this.currentAction.toString().equals("SHOOT")) {
                 this.balls = new ArrayList<>();
                 // TODO: Drop balls
