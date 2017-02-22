@@ -1,4 +1,4 @@
-# FIRST Steamworks Simulator  
+# FIRST Steamworks Simulator [![Build Status](https://travis-ci.org/TheLocust3/FRC-Game-Simulator.svg?branch=master)](https://travis-ci.org/TheLocust3/FRC-Game-Simulator)  
   
 ### What is it?  
 A simple simulator of the FRC 2017 game (Steamworks) that communicates to the server throught sockets. This simulates the basic Steamworks game but attempts to remove as many details as possible. For instance, instead of simulating pieces of the robot, the robot just tells the server how long it takes to shoot and how accurate it is. Currently, the simulator runs on a trust basis where there are very few rules that are actually enforced. This will change in the future, but currently, it isn't very relevant.  
