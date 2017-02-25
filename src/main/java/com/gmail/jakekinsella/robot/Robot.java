@@ -5,6 +5,13 @@ import com.gmail.jakekinsella.Main;
 import com.gmail.jakekinsella.Paintable;
 import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Gear;
+import com.gmail.jakekinsella.robot.manipulators.ClimberManipulator;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.BallsPickupHopperManipulator;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.BallsPickupStationManipulator;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.HighgoalManipulator;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.LowgoalManipulator;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearPickupStationManipulator;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearPlaceManipulator;
 import com.gmail.jakekinsella.robotactions.*;
 import com.gmail.jakekinsella.socketcommands.*;
 import com.gmail.jakekinsella.socketcommands.booleancommands.ConnectCommand;
@@ -36,21 +43,27 @@ public class Robot implements Paintable {
     private double velocity; // in pixels per second
     private String robotName;
 
-    private int pickupGearRange, pickupBallsRange, climbRange, highgoalRange, lowgoalRange;
-    private double pickupGearChance, pickupBallsChance, climbChance, highgoalChance, lowgoalChance, degreePerMillisecond, maxVelocity;
-    private int pickupGearTime, placeGearTime, climbTime, pickupBallsTime, highgoalBallsPerSecond, lowgoalBallsPerSecond;
+    private double degreePerMillisecond, maxVelocity;
     private long lastTick;
 
     private Rectangle2D.Double rectangle;
-    private RobotSide pickupGearSide, pickupBallsSide, climbSide, highgoalSide, lowgoalSide;
     private Socket robotSocket;
     private BufferedReader robotSocketReader;
+
     private RobotAllianceColor color;
     private RobotAlliance robotAlliance;
     private JSONFileReader jsonFileReader;
     private Action currentAction = new NoneAction();
     private ArrayList<Ball> balls;
     private Gear gear;
+
+    private GearPickupStationManipulator gearPickupStationManipulator;
+    private GearPlaceManipulator gearPlaceManipulator;
+    private BallsPickupStationManipulator ballsPickupStationManipulator;
+    private BallsPickupHopperManipulator ballsPickupHopperManipulator;
+    private LowgoalManipulator lowgoalManipulator;
+    private HighgoalManipulator highgoalManipulator;
+    private ClimberManipulator climberManipulator;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -154,34 +167,6 @@ public class Robot implements Paintable {
         return false;
     }
 
-    public boolean isReadyToReceiveGearFromStation() {
-        return RobotServer.getField().checkIfStationInRange(this.getGearDetectionBox());
-    }
-
-    public boolean isReadyToReceiveBallsFromStation() {
-        return RobotServer.getField().checkIfStationInRange(this.getBallsDetectionBox());
-    }
-
-    public boolean isReadyToReceiveBallsFromHopper() {
-        return RobotServer.getField().checkIfNonEmptyHopperInRange(this.getBallsDetectionBox());
-    }
-
-    public boolean isInRangeOfAirshipStation() {
-        return RobotServer.getField().checkIfAirshipStationInRange(this.getGearDetectionBox());
-    }
-
-    public boolean isInRangeOfRopeStation() {
-        return RobotServer.getField().checkIfRopeStationInRange(this.getClimbDetectionBox());
-    }
-
-    public boolean isInRangeOfHighGoal() {
-        return RobotServer.getField().checkIfBoilerInRange(this.getHighGoalDetectionBox());
-    }
-
-    public boolean isInRangeOfLowGoal() {
-        return RobotServer.getField().checkIfBoilerInRange(this.getLowGoalDetectionBox());
-    }
-
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         obj.put("name", this.robotName);
@@ -193,10 +178,6 @@ public class Robot implements Paintable {
         obj.put("action", this.currentAction.toString()); // TODO: add actions to robot and send them
 
         return obj;
-    }
-
-    public ArrayList<Ball> getBallsInFrontOf(RobotSide robotSide) {
-        return RobotServer.getField().detectAllBallsInRect(this.createDetectionRect(robotSide, this.pickupGearRange));
     }
 
     public void shutdownRobot() throws IOException {
@@ -265,7 +246,7 @@ public class Robot implements Paintable {
         switch (ClientCommand.valueOf(commandInfo.getName())) {
             case SHOOT:
                 logger.info(this.getRobotName() + " has started to shoot a ball");
-                this.currentAction = new ShootAction(commandInfo, this, this.highgoalBallsPerSecond, this.highgoalChance);
+                this.currentAction = this.highgoalManipulator.getAction(commandInfo);
                 break;
             case TURN:
                 logger.info(this.getRobotName() + " has started to turn");
@@ -277,27 +258,27 @@ public class Robot implements Paintable {
                 break;
             case PLACE_GEAR:
                 logger.info(this.getRobotName() + " has started to place a gear");
-                this.currentAction = new PlaceGearAction(commandInfo, this, this.placeGearTime);
+                this.currentAction = this.gearPlaceManipulator.getAction(commandInfo);
                 break;
             case PICKUP_GEAR_STATION:
                 logger.info(this.getRobotName() + " has started to pickup a gear from the human player station");
-                this.currentAction = new PickupGearFromStationAction(commandInfo, this, this.pickupGearTime, this.pickupGearChance);
+                this.currentAction = this.gearPickupStationManipulator.getAction(commandInfo);
                 break;
             case PICKUP_BALLS_STATION:
                 logger.info(this.getRobotName() + " has started to pickup balls from the human player station");
-                this.currentAction = new PickupBallsFromStationAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
+                this.currentAction = this.ballsPickupStationManipulator.getAction(commandInfo);
                 break;
             case PICKUP_BALLS_HOPPER:
                 logger.info(this.getRobotName() + " has started to pickup balls from a hopper");
-                this.currentAction = new PickupBallsFromHopperAction(commandInfo, this, this.pickupBallsTime, this.pickupBallsChance);
+                this.currentAction = this.ballsPickupHopperManipulator.getAction(commandInfo);
                 break;
             case LOWGOAL:
                 logger.info(this.getRobotName() + " has started to shoot a lowgoal");
-                this.currentAction = new LowgoalAction(commandInfo, this, this.lowgoalBallsPerSecond, this.lowgoalBallsPerSecond, this.lowgoalChance);
+                this.currentAction = this.lowgoalManipulator.getAction(commandInfo);
                 break;
             case CLIMB:
                 logger.info(this.getRobotName() + " has started to climb");
-                this.currentAction = new ClimbAction(commandInfo, this, this.climbTime, this.climbChance);
+                this.currentAction = this.climberManipulator.getAction(commandInfo);
         }
     }
 
@@ -338,6 +319,10 @@ public class Robot implements Paintable {
             } else if (this.currentAction.toString().equals("PLACE_GEAR")) {
                 this.gear = null;
             }
+        }
+
+        if (this.currentAction.getResponseString() != null) {
+            logger.info(this.getRobotName() + " " + this.currentAction.getResponseString());
         }
 
         this.currentAction = new NoneAction();
@@ -426,40 +411,22 @@ public class Robot implements Paintable {
     }
 
     private void getRobotProperties() {
-        // This method is a monstrosity
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
+System.out.println("TEST");
+
+        this.gearPickupStationManipulator = new GearPickupStationManipulator(this, jsonRobot);
+        this.gearPlaceManipulator = new GearPlaceManipulator(this, jsonRobot);
+        this.ballsPickupStationManipulator = new BallsPickupStationManipulator(this, jsonRobot);
+        this.ballsPickupHopperManipulator = new BallsPickupHopperManipulator(this, jsonRobot);
+        this.lowgoalManipulator = new LowgoalManipulator(this, jsonRobot);
+        this.highgoalManipulator = new HighgoalManipulator(this, jsonRobot);
+        this.climberManipulator = new ClimberManipulator(this, jsonRobot);
 
         this.color = RobotAllianceColor.valueOf((String) jsonRobot.get("allianceColor"));
         int startY = ((Long) jsonRobot.get("startY")).intValue();
         this.width = ((Long) jsonRobot.get("width")).intValue();
         this.height = ((Long) jsonRobot.get("height")).intValue();
         this.rectangle.getBounds2D().setRect(this.getX(), this.getY(), this.width, this.height);
-
-        this.pickupGearSide = RobotSide.valueOf((String) jsonRobot.get("pickupGearSide"));
-        this.pickupBallsSide = RobotSide.valueOf((String) jsonRobot.get("pickupBallsSide"));
-        this.climbSide = RobotSide.valueOf((String) jsonRobot.get("climbSide"));
-        this.highgoalSide = RobotSide.valueOf((String) jsonRobot.get("highgoalSide"));
-        this.lowgoalSide = RobotSide.valueOf((String) jsonRobot.get("lowgoalSide"));
-
-        this.pickupGearRange = ((Long) jsonRobot.get("pickupGearRange")).intValue();
-        this.pickupBallsRange = ((Long) jsonRobot.get("pickupBallsRange")).intValue();
-        this.climbRange = ((Long) jsonRobot.get("climbRange")).intValue();
-        this.highgoalRange = ((Long) jsonRobot.get("highgoalRange")).intValue();
-        this.lowgoalRange = ((Long) jsonRobot.get("lowgoalRange")).intValue();
-
-        this.pickupGearChance = (Double) jsonRobot.get("pickupGearChance");
-        this.pickupBallsChance = (Double) jsonRobot.get("pickupBallsChance");
-        this.climbChance = (Double) jsonRobot.get("climbChance");
-        this.highgoalChance = (Double) jsonRobot.get("highgoalChance");
-        this.lowgoalChance = (Double) jsonRobot.get("lowgoalChance");
-
-        this.pickupGearTime = ((Long) jsonRobot.get("pickupGearTime")).intValue();
-        this.placeGearTime = ((Long) jsonRobot.get("placeGearTime")).intValue();
-        this.climbTime = ((Long) jsonRobot.get("climbTime")).intValue();
-        this.pickupBallsTime = ((Long) jsonRobot.get("pickupBallsTime")).intValue();
-
-        this.highgoalBallsPerSecond = ((Long) jsonRobot.get("highgoalBallsPerSecond")).intValue();
-        this.lowgoalBallsPerSecond = ((Long) jsonRobot.get("lowgoalBallsPerSecond")).intValue();
 
         this.degreePerMillisecond = (Double) jsonRobot.get("degreePerMillisecond");
         this.maxVelocity = (Double) jsonRobot.get("maxVelocity");
@@ -472,56 +439,5 @@ public class Robot implements Paintable {
             this.setX((int) (Main.FRAME_WIDTH - (1.5 * this.getHeight()))); // TODO: figure out why the heck this is 1.5
             this.setAngle(270);
         }
-    }
-
-    private Shape getGearDetectionBox() {
-        return this.createDetectionRect(this.pickupGearSide, this.pickupGearRange);
-    }
-
-    private Shape getClimbDetectionBox() {
-        return this.createDetectionRect(this.climbSide, this.climbRange);
-    }
-
-    private Shape getBallsDetectionBox() {
-        return this.createDetectionRect(this.pickupBallsSide, this.pickupBallsRange);
-    }
-
-    private Shape getHighGoalDetectionBox() {
-        return this.createDetectionRect(this.highgoalSide, this.highgoalRange);
-    }
-
-    private Shape getLowGoalDetectionBox() {
-        return this.createDetectionRect(this.lowgoalSide, this.lowgoalRange);
-    }
-
-    private Shape createDetectionRect(RobotSide robotSide, int range) {
-        int rectWidth = this.width, rectHeight = range, offset = 0;
-        double rectAngle = 0;
-
-        switch (robotSide) {
-            case FRONT:
-                rectAngle = this.getAngle() - 180;
-                break;
-            case BACK:
-                rectAngle = this.getAngle();
-                break;
-            case LEFT:
-                rectWidth = this.height;
-                rectAngle = this.getAngle() - 270;
-                offset = -Math.abs(this.height - this.width) + 5; // This 5 is a tuned value. Idk why it is needed
-                break;
-            case RIGHT:
-                rectWidth = this.height;
-                rectAngle = this.getAngle() - 90;
-                offset = -Math.abs(this.height - this.width) + 5;
-                break;
-        }
-
-        int rectX = this.getCenterX() - (rectWidth / 2);
-        int rectY = this.getCenterY() + (this.height / 2) + offset;
-
-        Rectangle2D.Double rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
-        AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.getCenterX(), this.getCenterY());
-        return at.createTransformedShape(rect);
     }
 }

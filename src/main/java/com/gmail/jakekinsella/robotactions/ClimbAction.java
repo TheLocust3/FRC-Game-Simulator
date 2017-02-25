@@ -1,6 +1,7 @@
 package com.gmail.jakekinsella.robotactions;
 
 import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.manipulators.ClimberManipulator;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,12 +11,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClimbAction extends TimeAction {
 
-    private static final Logger logger = LogManager.getLogger();
-
     private double successChance;
 
-    public ClimbAction(Command command, Robot robot, int time, double successChance) {
-        super(command, robot, time);
+    public ClimbAction(Command command, ClimberManipulator manipulator, int time, double successChance) {
+        super(command, manipulator, time);
 
         this.successChance = successChance;
     }
@@ -24,28 +23,29 @@ public class ClimbAction extends TimeAction {
     public void actionDone() {
         boolean score = (Math.random() >= (1 - this.successChance));
 
-        if (score) {
-            logger.info(this.robot.getRobotName() + " has climbed");
-        } else {
-            logger.info(this.robot.getRobotName() + " has failed to climb");
-        }
-
         this.success = score;
 
-        this.robot.getRobotAlliance().getScore().climb();
-        this.robot.sendActionResponse();
-        this.robot.actionFinish();
+        this.manipulator.getScore().climb();
+        this.manipulator.actionFinish();
     }
 
     @Override
     public void actionStart() {
-        if (this.robot.isInRangeOfRopeStation()) {
+        if (this.manipulator.isInRange()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " isn't in range of a rope station");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+            this.manipulator.actionFinish();
         }
 
         // TODO: Check time
+    }
+
+    @Override
+    String getSuccessString() {
+        return "has climbed";
+    }
+
+    @Override
+    String getFailureString() {
+        return "has failed to climb";
     }
 }

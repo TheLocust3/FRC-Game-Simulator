@@ -2,6 +2,7 @@ package com.gmail.jakekinsella.robotactions;
 
 import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.BallsPickupHopperManipulator;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,12 +16,10 @@ public class PickupBallsFromHopperAction extends TimeAction {
 
     private double successChance;
 
-    private ArrayList<Ball> balls;
+    private ArrayList<Ball> balls = new ArrayList<>();
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public PickupBallsFromHopperAction(Command command, Robot robot, int time, double successChance) {
-        super(command, robot, time);
+    public PickupBallsFromHopperAction(Command command, BallsPickupHopperManipulator manipulator, int time, double successChance) {
+        super(command, manipulator, time);
 
         this.successChance = successChance;
     }
@@ -33,7 +32,7 @@ public class PickupBallsFromHopperAction extends TimeAction {
     public void actionDone() {
         this.success = true;
 
-        if (this.robot.isReadyToReceiveBallsFromHopper()) {
+        if (this.manipulator.isInRange()) {
             for (int i = 0; i < 50; i++) {
                 boolean score = (Math.random() >= (1 - this.successChance));
                 if (score) {
@@ -44,21 +43,26 @@ public class PickupBallsFromHopperAction extends TimeAction {
             }
         }
 
-        logger.info(this.robot.getRobotName() + " has picked up " + this.balls.size() + " balls");
-
         // TODO: Make hopper empty
 
-        this.robot.sendActionResponse();
-        this.robot.actionFinish();
+        this.manipulator.actionFinish();
     }
 
     @Override
     public void actionStart() {
-        if (!this.robot.isReadyToReceiveBallsFromHopper()) {
+        if (!this.manipulator.isInRange()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " isn't in range of a hopper");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+            this.manipulator.actionFinish();
         }
+    }
+
+    @Override
+    String getSuccessString() {
+        return "has picked up " + this.balls.size() + " balls";
+    }
+
+    @Override
+    String getFailureString() {
+        return "";
     }
 }

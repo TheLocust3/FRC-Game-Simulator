@@ -3,6 +3,7 @@ package com.gmail.jakekinsella.robotactions;
 import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Gear;
 import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.manipulators.ballsmanipulators.BallsPickupStationManipulator;
 import com.gmail.jakekinsella.socketcommands.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +17,10 @@ public class PickupBallsFromStationAction extends TimeAction {
 
     private double successChance;
 
-    private ArrayList<Ball> balls;
+    private ArrayList<Ball> balls = new ArrayList<>();
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public PickupBallsFromStationAction(Command command, Robot robot, int time, double successChance) {
-        super(command, robot, time);
+    public PickupBallsFromStationAction(Command command, BallsPickupStationManipulator manipulator, int time, double successChance) {
+        super(command, manipulator, time);
 
         this.successChance = successChance;
     }
@@ -34,7 +33,7 @@ public class PickupBallsFromStationAction extends TimeAction {
     public void actionDone() {
         this.success = true;
 
-        if (this.robot.isReadyToReceiveBallsFromStation()) {
+        if (this.manipulator.isInRange()) {
             for (int i = 0; i < 30; i++) { // TODO: Change the number of balls recieved from player station
                 boolean score = (Math.random() >= (1 - this.successChance));
                 if (score) {
@@ -43,19 +42,24 @@ public class PickupBallsFromStationAction extends TimeAction {
             }
         }
 
-        logger.info(this.robot.getRobotName() + " has picked up " + this.balls.size() + " balls");
-
-        this.robot.sendActionResponse();
-        this.robot.actionFinish();
+        this.manipulator.actionFinish();
     }
 
     @Override
     public void actionStart() {
-        if (!this.robot.isReadyToReceiveBallsFromStation()) {
+        if (!this.manipulator.isInRange()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " isn't in range of a human player station");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+            this.manipulator.actionFinish();
         }
+    }
+
+    @Override
+    String getSuccessString() {
+        return "has picked up " + this.balls.size() + " balls";
+    }
+
+    @Override
+    String getFailureString() {
+        return "";
     }
 }

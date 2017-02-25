@@ -1,15 +1,9 @@
 package com.gmail.jakekinsella.robotactions;
 
-import com.gmail.jakekinsella.field.Ball;
 import com.gmail.jakekinsella.field.Gear;
-import com.gmail.jakekinsella.robot.Robot;
-import com.gmail.jakekinsella.robot.RobotServer;
-import com.gmail.jakekinsella.robot.RobotSide;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearManipulator;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearPickupStationManipulator;
 import com.gmail.jakekinsella.socketcommands.Command;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 /**
  * Created by jakekinsella on 10/11/16.
@@ -20,10 +14,8 @@ public class PickupGearFromStationAction extends TimeAction {
 
     private Gear gear;
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public PickupGearFromStationAction(Command command, Robot robot, int time, double successChance) {
-        super(command, robot, time);
+    public PickupGearFromStationAction(Command command, GearPickupStationManipulator manipulator, int time, double successChance) {
+        super(command, manipulator, time);
 
         this.successChance = successChance;
     }
@@ -34,37 +26,33 @@ public class PickupGearFromStationAction extends TimeAction {
 
     @Override
     public void actionDone() {
-        boolean score = (Math.random() >= (1 - this.successChance));
+        this.success = (Math.random() >= (1 - this.successChance));
 
-        if (score) {
-            logger.info(this.robot.getRobotName() + " has picked up a gear");
-        } else {
-            logger.info(this.robot.getRobotName() + " has failed to pick up a gear");
-        }
-
-        this.success = score;
-
-        if (this.robot.isReadyToReceiveGearFromStation()) {
+        if (this.manipulator.isInRange()) {
             this.gear = new Gear(0, 0); // Random location
         }
 
-        this.robot.sendActionResponse();
-        this.robot.actionFinish();
+        this.manipulator.actionFinish();
     }
 
     @Override
     public void actionStart() {
-        if (this.robot.getGear() != null) {
+        if (((GearManipulator) this.manipulator).hasGear()) { // Don't really like casting up
             success = false;
-            logger.info(this.robot.getRobotName() + " already has a gear!");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
-        } else if (!this.robot.isReadyToReceiveGearFromStation()) {
+            this.manipulator.actionFinish();
+        } else if (!this.manipulator.isInRange()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " isn't in range of a human player station");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+            this.manipulator.actionFinish();
         }
     }
 
+    @Override
+    String getSuccessString() {
+        return "has picked up a gear from the Loading Station";
+    }
+
+    @Override
+    String getFailureString() {
+        return "has failed to pick up a gear from the Loading Station";
+    }
 }

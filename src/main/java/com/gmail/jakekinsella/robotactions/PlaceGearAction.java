@@ -1,40 +1,50 @@
 package com.gmail.jakekinsella.robotactions;
 
-import com.gmail.jakekinsella.robot.Robot;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearManipulator;
+import com.gmail.jakekinsella.robot.manipulators.gearmanipulators.GearPlaceManipulator;
 import com.gmail.jakekinsella.socketcommands.Command;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by jakekinsella on 10/17/16.
  */
 public class PlaceGearAction extends TimeAction {
 
-    private static final Logger logger = LogManager.getLogger();
+    private final double successChance;
 
-    public PlaceGearAction(Command command, Robot robot, int time) {
-        super(command, robot, time);
+    public PlaceGearAction(Command command, GearPlaceManipulator manipulator, int time, double successChance) {
+        super(command, manipulator, time);
+
+        this.successChance = successChance;
     }
 
     @Override
     public void actionDone() {
-        this.robot.getRobotAlliance().getScore().placeGear();
-        this.robot.sendActionResponse();
-        this.robot.actionFinish();
+        this.success = (Math.random() >= (1 - this.successChance));
+
+        this.manipulator.getScore().placeGear();
+        this.manipulator.actionFinish();
     }
 
     @Override
     public void actionStart() {
-        if (this.robot.getGear() == null) {
+        this.success = (Math.random() >= (1 - this.successChance));
+
+        if (((GearManipulator) this.manipulator).hasGear()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " doesn't have a gear!");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
-        } else if (this.robot.isInRangeOfAirshipStation()) {
+            this.manipulator.actionFinish();
+        } else if (this.manipulator.isInRange()) {
             success = false;
-            logger.info(this.robot.getRobotName() + " isn't in range of an airship station");
-            this.robot.actionFinish();
-            this.robot.sendActionResponse();
+            this.manipulator.actionFinish();
         }
+    }
+
+    @Override
+    String getSuccessString() {
+        return "placed a gear";
+    }
+
+    @Override
+    String getFailureString() {
+        return "failed to place a gear";
     }
 }

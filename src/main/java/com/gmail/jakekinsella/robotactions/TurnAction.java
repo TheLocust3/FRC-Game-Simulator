@@ -48,4 +48,14 @@ public class TurnAction extends Action {
 
         this.lastTick = System.currentTimeMillis();
     }
+
+    @Override
+    String getSuccessString() {
+        return null;
+    }
+
+    @Override
+    String getFailureString() {
+        return null;
+    }
 }

@@ -25,4 +25,14 @@ public class MovementAction extends Action {
         this.robot.actionFinish();
         this.robot.sendActionResponse();
     }
+
+    @Override
+    String getSuccessString() {
+        return null;
+    }
+
+    @Override
+    String getFailureString() {
+        return null;
+    }
 }

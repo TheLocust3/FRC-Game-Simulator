@@ -10,6 +10,10 @@ As you can see, many pieces that are often considered an integral part of FRC ha
  - Update for the 2017 game, Steamworks (List in order of priority)
    - Intake balls from the ground
    - Intake gears from the ground
+   - Put a limit on the number of balls that can be put into the robot
+ - Manipulators should hold their game object
+   - Should have separate action handler
+ - Default robot values
  - Unit testing
  - Refactor everything
  - Simulate human player action
