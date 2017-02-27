@@ -416,6 +416,7 @@ public class Robot implements Paintable {
         this.setX((int) (this.getX() + deltaX));
         this.setY((int) (this.getY() + deltaY));
 
+        // Currently balls are not moved around by robots, instead they are just intaked
         /*ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());
 
         if (balls.size() > 0) {

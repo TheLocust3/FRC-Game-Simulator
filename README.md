@@ -9,11 +9,13 @@ As you can see, many pieces that are often considered an integral part of FRC ha
 ### To-Do  
  - Update for the 2017 game, Steamworks (List in order of priority)
    - Intake gears from the ground
+   - Limit the number of gears and balls that can be taken from the Loading Station
    - Put a limit on the number of balls that can be put into the robot
  - Better intaking of balls
    - Allow it to be turned off
    - Make sure balls that go through the robot are the only ones that are picked up
    - Allow balls to be pushed around by robots
+   - Show number of balls in the robot
  - Manipulators should hold their game object
    - Should have separate action handler
  - Default robot values
