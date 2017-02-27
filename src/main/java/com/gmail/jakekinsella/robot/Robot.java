@@ -175,7 +175,7 @@ public class Robot implements Paintable {
         obj.put("height", this.height);
         obj.put("x", this.getCenterX());
         obj.put("y", this.getCenterY());
-        obj.put("action", this.currentAction.toString()); // TODO: add actions to robot and send them
+        obj.put("action", this.currentAction.toString());
 
         return obj;
     }
@@ -184,49 +184,15 @@ public class Robot implements Paintable {
         this.robotSocket.close();
     }
 
-    public void movementTick(long delta) {
-        double deltaSeconds = delta / 1000.0;
-
-        double radians = Math.toRadians(this.getAngle());
-        double deltaX = deltaSeconds * (this.getVelocity() * Math.sin(radians));
-        double deltaY = -deltaSeconds * (this.getVelocity() * Math.cos(radians));
-
-        this.setX((int) (this.getX() + deltaX));
-        this.setY((int) (this.getY() + deltaY));
-
-        ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());
-
-        if (balls.size() > 0) {
-            for (Ball ball : balls) {
-                if (!ball.isStuck()) {
-                    ball.setAngle(this.getAngle());
-                    ball.setVelocity(this.getVelocity());
-                } else {
-                    this.setVelocity(0);
-
-                    if (this.currentAction.toString().equals("TURN")) {
-                        this.currentAction = new NoneAction();
-                    }
-                }
-            }
-        }
-
-        if (RobotServer.getField().touchingWall(this.getRectangle())) {
-            this.setVelocity(0);
-        }
-
-        if (RobotServer.getField().checkIfBoilerInRange(this.getRectangle())) {
-            this.setVelocity(0);
-        }
-     }
-
     // Process all any new commands and give actions time to update
     public void tick() {
         long delta = System.currentTimeMillis() - this.lastTick;
 
-        movementTick(delta);
-        currentAction.tick();
-        processRobotInput();
+        this.movementTick(delta);
+        this.ballIntakeTick();
+
+        this.currentAction.tick();
+        this.processRobotInput();
 
         this.lastTick = System.currentTimeMillis();
     }
@@ -412,7 +378,6 @@ public class Robot implements Paintable {
 
     private void getRobotProperties() {
         JSONObject jsonRobot = (JSONObject) this.jsonFileReader.getJSONObject().get(this.robotName);
-System.out.println("TEST");
 
         this.gearPickupStationManipulator = new GearPickupStationManipulator(this, jsonRobot);
         this.gearPlaceManipulator = new GearPlaceManipulator(this, jsonRobot);
@@ -439,5 +404,45 @@ System.out.println("TEST");
             this.setX((int) (Main.FRAME_WIDTH - (1.5 * this.getHeight()))); // TODO: figure out why the heck this is 1.5
             this.setAngle(270);
         }
+    }
+
+    private void movementTick(long delta) {
+        double deltaSeconds = delta / 1000.0;
+
+        double radians = Math.toRadians(this.getAngle());
+        double deltaX = deltaSeconds * (this.getVelocity() * Math.sin(radians));
+        double deltaY = -deltaSeconds * (this.getVelocity() * Math.cos(radians));
+
+        this.setX((int) (this.getX() + deltaX));
+        this.setY((int) (this.getY() + deltaY));
+
+        /*ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());
+
+        if (balls.size() > 0) {
+            for (Ball ball : balls) {
+                if (!ball.isStuck()) {
+                    ball.setAngle(this.getAngle());
+                    ball.setVelocity(this.getVelocity());
+                } else {
+                    this.setVelocity(0);
+
+                    if (this.currentAction.toString().equals("TURN")) {
+                        this.currentAction = new NoneAction();
+                    }
+                }
+            }
+        }*/
+
+        if (RobotServer.getField().touchingWall(this.getRectangle())) {
+            this.setVelocity(0);
+        }
+
+        if (RobotServer.getField().checkIfBoilerInRange(this.getRectangle())) {
+            this.setVelocity(0);
+        }
+    }
+
+    private void ballIntakeTick() {
+        RobotServer.getField().getAndDeleteBallsInRange(this.getRectangle()); // TODO: Does it matter that balls get picked up even though they didn't go through the intake hole?
     }
 }

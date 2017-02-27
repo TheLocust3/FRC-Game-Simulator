@@ -173,6 +173,19 @@ public class Field extends JPanel {
         return false;
     }
 
+    public ArrayList<Ball> getAndDeleteBallsInRange(Shape rectangle) {
+        ArrayList<Ball> detectedBalls = new ArrayList<>();
+
+        for (Ball ball : this.balls) {
+            if (rectangle.intersects(ball.getDetectionBox())) {
+                detectedBalls.add(ball);
+            }
+        }
+        this.balls.removeAll(detectedBalls); // TODO: Check if this actually works
+
+        return detectedBalls;
+    }
+
     public void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
