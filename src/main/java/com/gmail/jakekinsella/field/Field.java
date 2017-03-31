@@ -18,7 +18,6 @@ import java.util.ArrayList;
  */
 public class Field extends JPanel {
 
-    private final int BALL_NUMBER = 6;
     private final int WALL_WIDTH = 6;
 
     public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall, leftCornerTopWall, leftCornerBottomWall, rightCornerTopWall, rightCornerBottomWall;
@@ -246,9 +245,6 @@ public class Field extends JPanel {
     }
 
     private void setupField() {
-        int interval = backgroundImageHeight / (BALL_NUMBER + 1);
-        for (int i = interval; i < backgroundImageHeight - 1; i += interval) { // The - 1 prevents a 7th ball from being drawn
-            this.balls.add(new Ball(backgroundImageWidth / 2 - (Ball.BALL_DIAMETER / 2), i - (Ball.BALL_DIAMETER / 2)));
-        }
+        // TODO: Setup field here
     }
 }
