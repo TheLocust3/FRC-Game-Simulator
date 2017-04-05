@@ -17,9 +17,9 @@ import java.net.Socket;
  */
 public class RobotServer {
 
-    private final int AUTO_TIME = 15000;
-    private final int TELEOP_TIME = 135000;
-    private final int MAP_UPDATE_INTERVAL = 1000;
+    private static final int AUTO_TIME = 15000;
+    private static final int TELEOP_TIME = 135000;
+    private static final int MAP_UPDATE_INTERVAL = 500;
 
     private long modeStartTime, lastMapUpdateTime;
     private ServerSocket serverSocket;
@@ -132,12 +132,12 @@ public class RobotServer {
             }
         }
 
-        if (this.mode.equals(Mode.AUTO) && System.currentTimeMillis() >= modeStartTime + this.AUTO_TIME) {
+        if (this.mode.equals(Mode.AUTO) && System.currentTimeMillis() >= modeStartTime + AUTO_TIME) {
             logger.info("Autonomous mode ended");
             this.startTeleop();
         }
 
-        if (this.mode.equals(Mode.TELEOP) && System.currentTimeMillis() >= modeStartTime + this.TELEOP_TIME) {
+        if (this.mode.equals(Mode.TELEOP) && System.currentTimeMillis() >= modeStartTime + TELEOP_TIME) {
             logger.info("Teleop mode ended");
             this.stopGame();
         }

@@ -175,6 +175,7 @@ public class Robot implements Paintable {
         obj.put("height", this.height);
         obj.put("x", this.getCenterX());
         obj.put("y", this.getCenterY());
+        obj.put("angle", this.getAngle());
         obj.put("action", this.currentAction.toString());
 
         return obj;
@@ -399,10 +400,10 @@ public class Robot implements Paintable {
         this.setY(startY);
         if (this.color == RobotAllianceColor.RED) {
             this.setX(40);
-            this.setAngle(90);
+            this.setAngle(0);
         } else {
             this.setX((int) (Main.FRAME_WIDTH - (1.5 * this.getHeight()))); // TODO: figure out why the heck this is 1.5
-            this.setAngle(270);
+            this.setAngle(180);
         }
     }
 
@@ -410,8 +411,8 @@ public class Robot implements Paintable {
         double deltaSeconds = delta / 1000.0;
 
         double radians = Math.toRadians(this.getAngle());
-        double deltaX = deltaSeconds * (this.getVelocity() * Math.sin(radians));
-        double deltaY = -deltaSeconds * (this.getVelocity() * Math.cos(radians));
+        double deltaX = deltaSeconds * (this.getVelocity() * Math.cos(radians));
+        double deltaY = deltaSeconds * (this.getVelocity() * Math.sin(radians));
 
         this.setX((int) (this.getX() + deltaX));
         this.setY((int) (this.getY() + deltaY));
