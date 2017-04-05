@@ -19,7 +19,7 @@ public class RobotServer {
 
     private static final int AUTO_TIME = 15000;
     private static final int TELEOP_TIME = 135000;
-    private static final int MAP_UPDATE_INTERVAL = 500;
+    private static final int MAP_UPDATE_INTERVAL = 100;
 
     private long modeStartTime, lastMapUpdateTime;
     private ServerSocket serverSocket;

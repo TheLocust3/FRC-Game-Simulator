@@ -18,9 +18,9 @@ import java.util.ArrayList;
  */
 public class Field extends JPanel {
 
-    private final int WALL_WIDTH = 6;
+    private static final int WALL_WIDTH = 6;
 
-    public Rectangle2D.Double leftWall, rightWall, topWall, bottomWall, leftCornerTopWall, leftCornerBottomWall, rightCornerTopWall, rightCornerBottomWall;
+    private Rectangle2D.Double leftWall, rightWall, topWall, bottomWall, leftCornerTopWall, leftCornerBottomWall, rightCornerTopWall, rightCornerBottomWall;
 
     private int fps = 0;
 
@@ -222,17 +222,17 @@ public class Field extends JPanel {
     }
 
     private void setupWalls() {
-        leftWall = new Rectangle2D.Double(-(this.WALL_WIDTH / 2) + 32, 84, this.WALL_WIDTH, backgroundImageHeight - 165);
-        rightWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2) - 32, 83, this.WALL_WIDTH, backgroundImageHeight - 165);
+        leftWall = new Rectangle2D.Double(-(WALL_WIDTH / 2) + 32, 84, WALL_WIDTH, backgroundImageHeight - 165);
+        rightWall = new Rectangle2D.Double(backgroundImageWidth - (WALL_WIDTH / 2) - 32, 83, WALL_WIDTH, backgroundImageHeight - 165);
 
-        topWall = new Rectangle2D.Double(110, -(this.WALL_WIDTH / 2) + 42, backgroundImageWidth - 216, this.WALL_WIDTH);
-        bottomWall = new Rectangle2D.Double(70, backgroundImageHeight - (this.WALL_WIDTH / 2) - 45, backgroundImageWidth - 140, this.WALL_WIDTH);
+        topWall = new Rectangle2D.Double(110, -(WALL_WIDTH / 2) + 42, backgroundImageWidth - 216, WALL_WIDTH);
+        bottomWall = new Rectangle2D.Double(70, backgroundImageHeight - (WALL_WIDTH / 2) - 45, backgroundImageWidth - 140, WALL_WIDTH);
 
-        leftCornerTopWall = new Rectangle2D.Double(25, -(this.WALL_WIDTH / 2) + 63, 90, this.WALL_WIDTH);
-        rightCornerTopWall = new Rectangle2D.Double(backgroundImageWidth - (this.WALL_WIDTH / 2) - 110, -(this.WALL_WIDTH / 2) + 64, 90, this.WALL_WIDTH);
+        leftCornerTopWall = new Rectangle2D.Double(25, -(WALL_WIDTH / 2) + 63, 90, WALL_WIDTH);
+        rightCornerTopWall = new Rectangle2D.Double(backgroundImageWidth - (WALL_WIDTH / 2) - 110, -(WALL_WIDTH / 2) + 64, 90, WALL_WIDTH);
 
-        leftCornerBottomWall = new Rectangle2D.Double(23, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
-        rightCornerBottomWall = new Rectangle2D.Double(backgroundImageWidth - 80, backgroundImageHeight - (this.WALL_WIDTH / 2) - 67, 60, this.WALL_WIDTH);
+        leftCornerBottomWall = new Rectangle2D.Double(23, backgroundImageHeight - (WALL_WIDTH / 2) - 67, 60, WALL_WIDTH);
+        rightCornerBottomWall = new Rectangle2D.Double(backgroundImageWidth - 80, backgroundImageHeight - (WALL_WIDTH / 2) - 67, 60, WALL_WIDTH);
     }
 
     private void setupHoppers() {
