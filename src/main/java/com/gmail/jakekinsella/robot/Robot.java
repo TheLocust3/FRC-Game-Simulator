@@ -85,27 +85,27 @@ public class Robot implements Paintable {
         return this.color;
     }
 
-    public int getX() {
-        return (int) this.rectangle.getX();
+    public double getX() {
+        return this.rectangle.getX();
     }
 
-    public int getCenterX() {
-        return (int) this.rectangle.getCenterX();
+    public double getCenterX() {
+        return this.rectangle.getCenterX();
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.rectangle.setRect(x, this.getY(), this.width, this.height);
     }
 
-    public int getY() {
-        return (int) this.rectangle.getY();
+    public double getY() {
+        return this.rectangle.getY();
     }
 
-    public int getCenterY() {
-        return (int) this.rectangle.getCenterY();
+    public double getCenterY() {
+        return this.rectangle.getCenterY();
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         rectangle.setRect(this.getX(), y, this.width, this.height);
     }
 
@@ -271,8 +271,8 @@ public class Robot implements Paintable {
             if (this.currentAction.toString().equals("PICKUP_GEAR_STATION")) {
                 this.gear = ((PickupGearFromStationAction) this.currentAction).getGear();
 
-                this.gear.setX(this.getCenterX());
-                this.gear.setY(this.getCenterY());
+                this.gear.setX((int) this.getCenterX());
+                this.gear.setY((int) this.getCenterY());
             } else if (this.currentAction.toString().equals("PICKUP_BALLS_STATION")) {
                 this.balls.addAll(((PickupBallsFromStationAction) this.currentAction).getBalls());
             } else if (this.currentAction.toString().equals("PICKUP_BALLS_HOPPER")) {
@@ -414,8 +414,8 @@ public class Robot implements Paintable {
         double deltaX = deltaSeconds * (this.getVelocity() * Math.cos(radians));
         double deltaY = deltaSeconds * (this.getVelocity() * Math.sin(radians));
 
-        this.setX((int) (this.getX() + deltaX));
-        this.setY((int) (this.getY() + deltaY));
+        this.setX(this.getX() + deltaX);
+        this.setY(this.getY() + deltaY);
 
         // Currently balls are not moved around by robots, instead they are just intaked
         /*ArrayList<Ball> balls = RobotServer.getField().detectAllBallsInRect(this.getRectangle());

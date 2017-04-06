@@ -21,9 +21,6 @@ public class MovementAction extends Action {
     public void tick() {
         this.robot.setVelocity(this.maxVelocity * this.percentSpeed);
         this.success = true;
-
-        this.robot.actionFinish();
-        this.robot.sendActionResponse();
     }
 
     @Override

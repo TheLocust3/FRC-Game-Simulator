@@ -65,8 +65,8 @@ public abstract class Manipulator {
                 break;
         }
 
-        int rectX = this.robot.getCenterX() - (rectWidth / 2);
-        int rectY = this.robot.getCenterY() + (this.robot.getHeight() / 2) + offset;
+        double rectX = this.robot.getCenterX() - (rectWidth / 2);
+        double rectY = this.robot.getCenterY() + (this.robot.getHeight() / 2) + offset;
 
         Rectangle2D.Double rect = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
         AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rectAngle), this.robot.getCenterX(), this.robot.getCenterY());

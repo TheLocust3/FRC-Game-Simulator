@@ -119,7 +119,7 @@ public class RobotServer {
 
     public void run() {
         if (this.mode.equals(Mode.AUTO) || this.mode.equals(Mode.TELEOP)) {
-            for (Ball ball: this.field.getBalls()) {
+            for (Ball ball: field.getBalls()) {
                 ball.tick();
             }
 
