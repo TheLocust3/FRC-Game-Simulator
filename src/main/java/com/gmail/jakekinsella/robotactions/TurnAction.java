@@ -20,7 +20,7 @@ public class TurnAction extends Action {
         super(command, robot);
 
         this.startingAngle = this.robot.getAngle();
-        this.finalAngle = ((Long) this.command.getArg(0));
+        this.finalAngle = this.startingAngle + ((Long) this.command.getArg(0));
 
         this.degreePerMillisecond = degreePerMillisecond;
         if (this.startingAngle > this.finalAngle) {
